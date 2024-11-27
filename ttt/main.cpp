@@ -1,12 +1,14 @@
 #include "main.h"
 
 int main(int argc, char **argv, char **env) {
+	SetTraceLogLevel(LOG_ERROR);
 	// Initialize the window
 	InitWindow(1280, 800, "Raylib Game");
 	Gamestate state;
 	init_game(argc, argv, &state);
 	Vector2 mouse_coords_txt = DEFAULT_POSITION;
-
+	bool curtainActive = false;
+	bool fadeActive = false;
 	// Main game loop
 	while (!WindowShouldClose())
 	{
@@ -18,7 +20,11 @@ int main(int argc, char **argv, char **env) {
 
 	//game area
 	DrawRectangle(240, 100, 800, 600, state.colors.game);
-	DrawRectangle(240, 100, 800, 600,
+	DrawText("Howdy Ho!", 630, 280, 20, GREEN);
+	if (curtainActive)
+		drawCurtains(240, 100, 600, 800, BLUE, 8);
+	if (fadeActive)
+		fadeToBlack(240, 100, 600, 800, 8);
 
 	display_mouse_coords(mouse_coords_txt, 20, state.colors.window_txt_back);
 	EndDrawing();
@@ -26,7 +32,11 @@ int main(int argc, char **argv, char **env) {
 
 	if (IsKeyPressed(KEY_ESCAPE))
 		break;
-	state->frameCount++;
+	if (IsKeyPressed(KEY_D))
+		curtainActive = true;
+	if (IsKeyPressed(KEY_F))
+		fadeActive = true;
+	state.frameCount++;
 	}
 
 	// Close the window
@@ -75,9 +85,9 @@ void init_game(int argc, char **argv, Gamestate *state)
 	}*/
 }
 
-int timer(double seconds)
+int timer(double seconds, Gamestate *state)
 {
-	double time = (seconds * TARGET_FPS)
+	double time = (seconds * TARGET_FPS);
 	if (time < (seconds * TARGET_FPS) + 1)
 		time += state->frameCount;
 	if (time <= state->frameCount)
@@ -85,7 +95,7 @@ int timer(double seconds)
 	return (0);
 }
 
-int countDownTimer(int seconds)
+int countDownTimer(int seconds, Gamestate *state)
 {
 	static int countDownSecs = 0;
 	static double targetFrames = 0;
@@ -93,9 +103,9 @@ int countDownTimer(int seconds)
 	if (targetFrames = 0)
 	{
 		countDownSecs = seconds;
-		targetFrames = state->framecount + (seconds * TARGET_FPS);
+		targetFrames = state->frameCount + (seconds * TARGET_FPS);
 	}
-	if (state->frameCount >= targetFrames - (countDownSecs * TARGET_FPS)
+	if (state->frameCount >= targetFrames - (countDownSecs * TARGET_FPS))
 	{
 		countDownSecs--;
 	}
@@ -104,7 +114,7 @@ int countDownTimer(int seconds)
 
 int formatTimer(int timeInSeconds, char *buffer)
 {
-	if (timeInSeconds > 5999) || (sizeof(buffer) < 6) //"99:60"
+	if ((timeInSeconds > 5999) || (sizeof(buffer) < 6)) //"99:60"
 		return (-1);
 	int minutes = timeInSeconds / 60;
 	int seconds = timeInSeconds % 60;
@@ -113,12 +123,12 @@ int formatTimer(int timeInSeconds, char *buffer)
 	return 0;
 }
 
-void drawCurtains(posX, posY, height, width, color, speed)
+void drawCurtains(int posX, int posY, int height, int width, Color color, float speed)
 {
 	static int curtain_height = 0;
 	int curtain_width = width;
 	color.a = 128;
-	DrawRectangle(posX, posY, curtain_width, curtain_height, color)
+	DrawRectangle(posX, posY, curtain_width, curtain_height, color);
 
 	if (curtain_height < height)
 	{
@@ -126,15 +136,14 @@ void drawCurtains(posX, posY, height, width, color, speed)
 	}
 }
 
-void fadeToBlack(posX, posY, height, width, speed)
+void fadeToBlack(int posX, int posY, int height, int width, int speed)
 {
-	static int fade = 0;
+	static unsigned char fade = 0;
 
 	Color color = { 0, 0, 0, fade };
-	DrawRectangle(posX, posY, curtain_width, curtain_height, color)
-
-	if (curtain_height < height)
-	{
-		curtain_height += 1 + speed;
-	}
+	DrawRectangle(posX, posY, width, height, color);
+	if ((fade + 1 + speed) <= 255)
+		fade += 1 + speed;
+	else
+		fade = 255;
 }
