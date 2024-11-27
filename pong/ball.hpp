@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include <cstdlib>
 #include <random>
+#include <chrono>
 
 class Ball {
 public:
@@ -18,14 +19,25 @@ public:
         position.y += speed.y * deltaTime;
     }
 
-    void CheckCollisionWithWalls(float screenHeight) {
-        if (position.y - radius <= 0 || position.y + radius >= screenHeight) {
+    void incrSpeed() {
+        if (speed.x < 0)
+            speed.x -= 10.0f;
+        else
+            speed.x += 10.0f;
+        if (speed.y < 0)
+            speed.y -= 10.0f;
+        else
+            speed.y += 10.0f;
+    }
+
+    void CheckCollisionWithWalls() {
+        if (position.y - radius <= 100 || position.y + radius >= (GetScreenHeight() - 100)) {
             speed.y *= -1; // Reverse vertical direction
         }
     }
 
-    bool CheckCollisionWithPaddle(Rectangle paddle) {
-        if (CheckCollisionCircleRec(position, radius, paddle)) {
+    bool CheckCollisionWithPaddle(Vector2 paddleV, float width, float height) {
+        if (CheckCollisionCircleRec(position, radius, Rectangle{paddleV.x, paddleV.y, width, height})) {
             speed.x *= -1; // Reverse horizontal direction
             return true;
         }
@@ -34,18 +46,31 @@ public:
 
 
     void Reset(float screenWidth, float screenHeight) {
-        // Initialize random engine and distribution
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        static std::uniform_int_distribution<int> dist(0, 1);
+        position.x = screenWidth / 2;
+        position.y = screenHeight / 2;
 
-        // Generate a random value (0 or 1)
-        int randint = dist(gen);
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 rng(static_cast<unsigned int>(seed));
+        std::uniform_int_distribution<int> dist(1,100);
+        auto rand_int = dist(rng);
 
-        position = {screenWidth / 2, screenHeight / 2};
-        speed = {300.0f, randint == 0 ? -300.0f : 300.0f};
+        if (rand_int >= 1 && rand_int <= 25) {
+            speed.x = 200.0f;
+            speed.y = 200.0f;
+        }
+        else if (rand_int >= 26 && rand_int <= 50) {
+            speed.x = -200.0f;
+            speed.y = 200.0f;
+        }
+        else if (rand_int >= 51 && rand_int <= 75) {
+            speed.x = -200.0f;
+            speed.y = -200.0f;
+        }
+        else {
+            speed.x = 200.0f;
+            speed.y = -200.0f;
+        }
     }
-
 
     void Draw() const {
         DrawCircleV(position, radius, BLACK);
