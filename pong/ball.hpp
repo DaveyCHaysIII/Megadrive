@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <cstdlib>
+#include <random>
 
 class Ball {
 public:
@@ -31,10 +32,20 @@ public:
         return false;
     }
 
+
     void Reset(float screenWidth, float screenHeight) {
+        // Initialize random engine and distribution
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        static std::uniform_int_distribution<int> dist(0, 1);
+
+        // Generate a random value (0 or 1)
+        int randint = dist(gen);
+
         position = {screenWidth / 2, screenHeight / 2};
-        speed = {300.0f, (rand() % 2 == 0 ? -300.0f : 300.0f)};
+        speed = {300.0f, randint == 0 ? -300.0f : 300.0f};
     }
+
 
     void Draw() const {
         DrawCircleV(position, radius, BLACK);
