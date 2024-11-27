@@ -10,6 +10,7 @@
 #define PALETTE_COUNT 3
 #define MAX_SOUNDS 5
 #define MAX_TEXTURES 10
+#define TARGET_FPS 60
 
 //------structs
 
@@ -33,7 +34,11 @@ typedef struct
 
 	Texture2D *textures;
 	int textureCount;
+
+	int frameCount;
+
 } Gamestate;
+
 
 static const Palette palettes[PALETTE_COUNT] =
 {
@@ -46,4 +51,8 @@ static const Palette palettes[PALETTE_COUNT] =
 
 void display_mouse_coords(Vector2, int, Color);
 void init_game(int argc, char **argv, Gamestate *state);
+int timer(double);
+int countDownTimer(int);
+int formatTimer(int, char *);
+void drawCurtains(int, int, int, int, Color, int);
 #endif
