@@ -4,7 +4,8 @@
 //------includes
 #include <raylib.h>
 #include <stddef.h>
-
+#include <cstdio>
+#include <iostream>
 //------defines
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
 #define PALETTE_COUNT 3
@@ -51,8 +52,9 @@ static const Palette palettes[PALETTE_COUNT] =
 
 void display_mouse_coords(Vector2, int, Color);
 void init_game(int argc, char **argv, Gamestate *state);
-int timer(double);
-int countDownTimer(int);
+int timer(double, Gamestate *);
+int countDownTimer(int, Gamestate *);
 int formatTimer(int, char *);
-void drawCurtains(int, int, int, int, Color, int);
+void drawCurtains(int, int, int, int, Color, float);
+void fadeToBlack(int, int, int, int, int);
 #endif
