@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string.h>
+#include <stdio.h>
 
 //------defines
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
@@ -18,6 +19,12 @@
 #define LOGO_POSX 10
 #define LOGO_POSY 10
 #define LOGO_SIZE 30
+#define BOARD_POSX 420
+#define BOARD_POSY 180
+#define BOARD_HEIGHT 440
+#define BOARD_WIDTH 440
+#define BLOCK_HEIGHT 140
+#define BLOCK_WIDTH 140
 #define GAME_X 240
 #define GAME_Y 100
 #define GAME_HEIGHT 600
@@ -73,9 +80,9 @@ enum color_list
 
 //------funcs
 
-void init_game(int, char**, Gamestate *, Color *);
+void init_game(int, char**, Gamestate *, Color *, Texture2D *);
 void splash(Gamestate *, Color *);
-void game_playing(Gamestate *, Color *);
+void game_playing(Gamestate *, Color *, Texture2D *);
 void game_over(Gamestate *, Color *);
 void scoreBoard(Gamestate *, Color *);
 

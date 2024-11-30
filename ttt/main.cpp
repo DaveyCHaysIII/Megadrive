@@ -10,9 +10,10 @@ int main(int argc, char **argv, char **env) {
 	//--------------------------Init
 	Gamestate current_game_state;
 	Color colors[MAX_COLORS];
+	Texture2D textures[MAX_TEXTURES];
 	double frameCount;
 
-	init_game(argc, argv, &current_game_state, colors);
+	init_game(argc, argv, &current_game_state, colors, textures);
 
 	while (!WindowShouldClose())
 	{
@@ -26,7 +27,7 @@ int main(int argc, char **argv, char **env) {
 		if (current_game_state == SPLASH)
 			splash(&current_game_state, colors);
 		else if (current_game_state == GAME_PLAYING)
-			game_playing(&current_game_state, colors);
+			game_playing(&current_game_state, colors, textures);
 		else if (current_game_state == GAME_OVER)
 			game_over(&current_game_state, colors);
 		else if (current_game_state == SCORE_BOARD)
@@ -52,7 +53,7 @@ int main(int argc, char **argv, char **env) {
 
 //----------------------------------------- Game Specific Functions
 
-void init_game(int argc, char **argv, Gamestate *state, Color *gameColors)
+void init_game(int argc, char **argv, Gamestate *state, Color *gameColors, Texture2D *textures)
 {
 	//static std::string BASE_PATH = "./assets/";
 
@@ -61,21 +62,16 @@ void init_game(int argc, char **argv, Gamestate *state, Color *gameColors)
 		//BASE_PATH = "./assets/"; //filepath to assets directory
 		*state = SPLASH;
 
-		/*
-		std::string texturePath = "ttt_spritesheet.png";
-    		std::string sound1Path = "Placeholder_ducktales.ogg";
-    		std::string sound2Path = "MEGAdrive.wav";
-		*/
 		gameColors[BACKGROUND] = GRAY;
 		gameColors[FOREGROUND] = LIGHTGRAY;
 		gameColors[BACKGROUND_TEXT] = DARKGRAY;
 		gameColors[FOREGROUND_TEXT] = GRAY;
 		gameColors[WINDOW_BACKGROUND] = BLACK;
 		gameColors[WINDOW_TEXT] = GREEN;
+		
 
+		textures[0] = LoadTexture("./assets/ttt_spritesheet.png");
 		/*
-		textures[0] = LoadTextureFromPath(texturePath, BASE_PATH);
-
 		sounds[0] = LoadSoundFromPath(sound1Path, BASE_PATH);
 		sounds[1] = LoadSoundFromPath(sound2Path, BASE_PATH);
 		*/
@@ -99,11 +95,69 @@ void splash(Gamestate *state, Color *colors)
 	if (IsKeyPressed(KEY_SPACE))
 		*state = GAME_PLAYING;
 };
-void game_playing(Gamestate *state, Color *colors)
+void game_playing(Gamestate *state, Color *colors, Texture2D *textures)
 {
+	int i;
+	char buffer[50];
+	Rectangle recs[9];
+	Rectangle player_x = { 0.0f, 0.0f, 16.0f, 16.0f };
+	Rectangle player_o = { 16.0f, 0.0f, 16.0f, 16.0f };
+
+	static int textured[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+	const int PADDING = 10;
+	const int OFFSET = 150;	
+	int row_1_x = BOARD_POSX;
+	int row_2_x = BOARD_POSX + OFFSET;
+	int row_3_x = row_2_x + OFFSET;
+	int col_1_y = BOARD_POSY;
+	int col_2_y = BOARD_POSY + OFFSET;
+	int col_3_y = col_2_y + OFFSET;
+
+	recs[0] = (Rectangle){ (float)row_1_x, (float)col_1_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[1] = (Rectangle){ (float)row_2_x, (float)col_1_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[2] = (Rectangle){ (float)row_3_x, (float)col_1_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[3] = (Rectangle){ (float)row_1_x, (float)col_2_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[4] = (Rectangle){ (float)row_2_x, (float)col_2_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[5] = (Rectangle){ (float)row_3_x, (float)col_2_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[6] = (Rectangle){ (float)row_1_x, (float)col_3_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[7] = (Rectangle){ (float)row_2_x, (float)col_3_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+	recs[8] = (Rectangle){ (float)row_3_x, (float)col_3_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
+
 	//insert game_playing logic here
 	DrawText("GAME PLAYING!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+	//drop shadow
+	DrawRectangle(BOARD_POSX + PADDING, BOARD_POSY + PADDING, BOARD_HEIGHT + PADDING, BOARD_WIDTH + PADDING, BLACK);
+	//board
+	DrawRectangle(BOARD_POSX - PADDING, BOARD_POSY - PADDING, BOARD_HEIGHT + (PADDING * 2), BOARD_WIDTH + (PADDING * 2), DARKGRAY);
+	for(i = 0; i <= 8; i++)
+	{
+		int start_x = 50;
+		int start_y = 100;
+		int offset_y = 20;
+		sprintf(buffer, "textured[%d] = %d", i, textured[i]);
+		DrawText(buffer, start_x, (start_y + (i * offset_y)), 20, WHITE);
 
+		DrawRectangleRec(recs[i], GREEN);
+		if (textured[i] == 1)
+		{
+			//DrawRectangleRec(recs[i], WHITE);
+			DrawTexturePro(textures[0], player_x, recs[i], (Vector2){ 0, 0}, 0, WHITE);
+		};
+	};
+
+	
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mousePos = GetMousePosition();
+
+            // Check if mouse click is within the rectangle
+	    for (i = 0; i <= 8; i++)
+            	if (CheckCollisionPointRec(mousePos, recs[i])) 
+		{
+                	 textured[i] = 1;
+            	};
+        }
+	
 	if (IsKeyPressed(KEY_SPACE))
 		*state = GAME_OVER;
 };
@@ -241,21 +295,6 @@ int fadeFromBlack(int posX, int posY, int height, int width, int speed)
 	return (0);
 };
 
-std::string GetFullPath(const std::string& filename, const std::string& basePath)
-{
-	return basePath + filename;
-};
 
-Texture2D LoadTextureFromPath(const std::string& filename, const std::string& basePath)
-{
-	std::string fullPath = GetFullPath(filename, basePath);
-	return LoadTexture(fullPath.c_str());
-};
-
-Sound LoadSoundFromPath(const std::string& filename, const std::string& basePath)
-{
-	std::string fullPath = GetFullPath(filename, basePath);
-	return LoadSound(fullPath.c_str());
-}
 
 
