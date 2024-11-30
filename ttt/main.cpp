@@ -8,31 +8,31 @@ int main(int argc, char **argv, char **env) {
 	InitWindow(1280, 800, "Raylib Game");
 
 	//--------------------------Init
-	int *current_game_state;
-	Color *colors;
-	Texture2d *textures;
-	double framecount;
-	//look into how audio works?
+	Gamestate current_game_state;
+	Color colors[MAX_COLORS];
+	double frameCount;
 
-	init(argc, argv, current_game_state, colors, textures);
+	init_game(argc, argv, &current_game_state, colors);
 
 	while (!WindowShouldClose())
 	{
-		framecount = getFrames();
+		frameCount = getFrames();
 		//-------------------------Draw space
 		BeginDrawing();
 		ClearBackground(colors[WINDOW_BACKGROUND]);
 		DrawText("MEGADrive!", LOGO_POSX, LOGO_POSY, LOGO_SIZE, colors[WINDOW_TEXT]);
 		DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, colors[BACKGROUND]);
 		//-------------------------Game Area
-		if (current_game_state = SPLASH)
-			splash();
-		else if (current_game_state = GAME_PLAYING)
-			game_playing();
-		else if (current_game_state = GAME_OVER)
-			game_over();
-		else if (current_game_state = SCORE_BOARD)
-			scoreBoard();
+		if (current_game_state == SPLASH)
+			splash(&current_game_state, colors);
+		else if (current_game_state == GAME_PLAYING)
+			game_playing(&current_game_state, colors);
+		else if (current_game_state == GAME_OVER)
+			game_over(&current_game_state, colors);
+		else if (current_game_state == SCORE_BOARD)
+			scoreBoard(&current_game_state, colors);
+		else if (current_game_state == END)
+			break;
 
 		//-------------------------Close
 
@@ -52,31 +52,33 @@ int main(int argc, char **argv, char **env) {
 
 //----------------------------------------- Game Specific Functions
 
-void init_game(int argc, char **argv, int *state, Color *gameColors, Texture2d *textures)
+void init_game(int argc, char **argv, Gamestate *state, Color *gameColors)
 {
+	//static std::string BASE_PATH = "./assets/";
 
 	if (argc < 2)
 	{
-		const char *asset_fp = ""; //filepath to assets directory
-		state = SPLASH;
-		gameColors =
-		[
-			GRAY,
-			LIGHTGRAY,
-			DARKGRAY,
-			GRAY,
-			BLACK,
-			GREEN
-		];
-		textures =
-		[
-			LoadTexture(),
-			LoadTexture(),
-			//etc
-		];
+		//BASE_PATH = "./assets/"; //filepath to assets directory
+		*state = SPLASH;
 
+		/*
+		std::string texturePath = "ttt_spritesheet.png";
+    		std::string sound1Path = "Placeholder_ducktales.ogg";
+    		std::string sound2Path = "MEGAdrive.wav";
+		*/
+		gameColors[BACKGROUND] = GRAY;
+		gameColors[FOREGROUND] = LIGHTGRAY;
+		gameColors[BACKGROUND_TEXT] = DARKGRAY;
+		gameColors[FOREGROUND_TEXT] = GRAY;
+		gameColors[WINDOW_BACKGROUND] = BLACK;
+		gameColors[WINDOW_TEXT] = GREEN;
 
+		/*
+		textures[0] = LoadTextureFromPath(texturePath, BASE_PATH);
 
+		sounds[0] = LoadSoundFromPath(sound1Path, BASE_PATH);
+		sounds[1] = LoadSoundFromPath(sound2Path, BASE_PATH);
+		*/
 	}
 	/*else
 	{
@@ -84,27 +86,44 @@ void init_game(int argc, char **argv, int *state, Color *gameColors, Texture2d *
 		//argv[1] - game state 1
 		//argv[2] - game state 2
 	}*/
+	else
+	{
+		return;
+	}
 }
 
-void splash(int *state)
+void splash(Gamestate *state, Color *colors)
 {
 	//insert splash logic here
-
-	state = GAME_PLAYING;
+	DrawText("SPLASH!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+	if (IsKeyPressed(KEY_SPACE))
+		*state = GAME_PLAYING;
 };
-void game_playing(int *state)
+void game_playing(Gamestate *state, Color *colors)
 {
 	//insert game_playing logic here
+	DrawText("GAME PLAYING!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+
+	if (IsKeyPressed(KEY_SPACE))
+		*state = GAME_OVER;
 };
 
-void game_over()
+void game_over(Gamestate *state, Color *colors)
 {
-	//instert game_over logic here
+	//insert game_over logic here
+	DrawText("GAME OVER!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+	if (IsKeyPressed(KEY_SPACE))
+		*state = SCORE_BOARD;
+	if (IsKeyPressed(KEY_G))
+		*state = GAME_PLAYING;
 };
 
-void scoreBoard()
+void scoreBoard(Gamestate *state, Color *colors)
 {
 	//insert scoreboard logic here
+	DrawText("SCORE BOARD!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+	if (IsKeyPressed(KEY_SPACE))
+		*state = END;
 };
 
 //-----------------------------------Begin library candidate Functions
@@ -114,7 +133,7 @@ double getFrames()
 	static double frames = 0;
 	frames++;
 	return frames;
-}
+};
 
 void display_mouse_coords(Vector2 text_position, int text_size, Color text_color)
 {
@@ -133,9 +152,9 @@ void display_mouse_coords(Vector2 text_position, int text_size, Color text_color
 			text_position.y + (float)text_size,
 			text_size,
 			text_color);
-}
+};
 
-int timer(int seconds, double framecount, int target_fps)
+int timer(int seconds, double frameCount, int target_fps)
 {
 	double time = (seconds * target_fps);
 	if (time < (seconds * target_fps) + 1)
@@ -143,7 +162,7 @@ int timer(int seconds, double framecount, int target_fps)
 	if (time <= frameCount)
 		return (1);
 	return (0);
-}
+};
 
 int countDownTimer(int seconds, double frameCount, int target_fps)
 {
@@ -160,7 +179,7 @@ int countDownTimer(int seconds, double frameCount, int target_fps)
 		countDownSecs--;
 	}
 	return countDownSecs;
-}
+};
 
 int formatTimer(int timeInSeconds, char *buffer)
 {
@@ -171,7 +190,7 @@ int formatTimer(int timeInSeconds, char *buffer)
 
 	std::sprintf(buffer, "%02d:%02d", minutes, seconds);
 	return 0;
-}
+};
 
 int drawCurtains(int posX, int posY, int height, int width, Color color, int speed, int direction)
 {
@@ -188,7 +207,7 @@ int drawCurtains(int posX, int posY, int height, int width, Color color, int spe
 		return (0);
 	}
 	return (1);
-}
+};
 
 int fadeToBlack(int posX, int posY, int height, int width, int speed)
 {
@@ -197,14 +216,14 @@ int fadeToBlack(int posX, int posY, int height, int width, int speed)
 	Color color = { 0, 0, 0, fade };
 	DrawRectangle(posX, posY, width, height, color);
 	if (fade == 255)
-		return 1
+		return (1);
 
 	if ((fade + (1 + speed)) <= 255)
 		fade += (1 + speed);
 	else
 		fade = 255;
 	return (0);
-}
+};
 
 int fadeFromBlack(int posX, int posY, int height, int width, int speed)
 {
@@ -213,11 +232,30 @@ int fadeFromBlack(int posX, int posY, int height, int width, int speed)
 	Color color = { 0, 0, 0, fade };
 	DrawRectangle(posX, posY, width, height, color);
 	if (fade == 0)
-		return 1
+		return (1);
 
 	if ((fade - (1 + speed)) >= 0)
 		fade -= (1 + speed);
 	else
 		fade = 0;
 	return (0);
+};
+
+std::string GetFullPath(const std::string& filename, const std::string& basePath)
+{
+	return basePath + filename;
+};
+
+Texture2D LoadTextureFromPath(const std::string& filename, const std::string& basePath)
+{
+	std::string fullPath = GetFullPath(filename, basePath);
+	return LoadTexture(fullPath.c_str());
+};
+
+Sound LoadSoundFromPath(const std::string& filename, const std::string& basePath)
+{
+	std::string fullPath = GetFullPath(filename, basePath);
+	return LoadSound(fullPath.c_str());
 }
+
+
