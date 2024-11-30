@@ -6,7 +6,7 @@ int main(int argc, char **argv, char **env) {
 	SetTraceLogLevel(LOG_ERROR);
 	// Initialize the window
 	InitWindow(1280, 800, "Raylib Game");
-
+	InitAudioDevice();
 	//--------------------------Init
 	Gamestate current_game_state;
 	Color colors[MAX_COLORS];
