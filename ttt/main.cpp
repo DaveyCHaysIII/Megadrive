@@ -72,6 +72,7 @@ void init_game(int argc, char **argv, Gamestate *state, Color *gameColors, Textu
 		
 
 		textures[0] = LoadTexture("./assets/ttt_spritesheet.png");
+		textures[1] = LoadTexture("./assets/ttt_marquissheet.png");
 		/*
 		sounds[0] = LoadSoundFromPath(sound1Path, BASE_PATH);
 		sounds[1] = LoadSoundFromPath(sound2Path, BASE_PATH);
@@ -92,7 +93,11 @@ void init_game(int argc, char **argv, Gamestate *state, Color *gameColors, Textu
 void splash(Gamestate *state, Color *colors, Texture2D *textures, double frameCount)
 {
 	//insert splash logic here
-	DrawText("SPLASH!", 620, 400, 20, colors[BACKGROUND_TEXT]);
+	Rectangle marquis_dest = { 340.0f, 200.0f, 600.0f, 150.0f };
+	Rectangle marquis_source = { 0.0f, 0.0f, 64.0f, 16.0f }; 
+
+	DrawText("Press [SPACE] to play!", 465, 550, 30, colors[BACKGROUND_TEXT]);
+	DrawTexturePro(textures[1], marquis_source, marquis_dest, (Vector2){ 0, 0}, 0, WHITE);
 	if (IsKeyPressed(KEY_SPACE))
 		*state = GAME_PLAYING;
 };
@@ -195,15 +200,15 @@ void game_playing(Gamestate *state, Color *colors, Texture2D *textures, double f
 		//draw!
 		if(drawCurtains(GAME_X, GAME_Y, GAME_HEIGHT, GAME_WIDTH, BLUE, 8) == 0)
 		{
-			DrawText("X Score: ", 620, 250, 30, GREEN);
+			DrawText("X Score: ", 580, 250, 30, GREEN);
 			if(countDownTimer(1, frameCount, TARGET_FPS) == 0 || gate[0] == 1)
 			{
 				gate[0] = 1;
-				DrawText("Y Score: ", 620, 400, 30, GREEN);
+				DrawText("Y Score: ", 580, 400, 30, GREEN);
 				if(countDownTimer(1, frameCount, TARGET_FPS) == 0 || gate[1] == 1)
 				{
 					gate[1] = 1;
-					DrawText("Press Space!", 620, 550, 30,  GREEN);
+					DrawText("Press Space!", 550, 550, 30,  GREEN);
 				}
 			}
 
