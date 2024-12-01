@@ -12,6 +12,7 @@ int main(int argc, char **argv, char **env) {
 	Color colors[MAX_COLORS];
 	Texture2D textures[MAX_TEXTURES];
 	double frameCount;
+	SetTargetFPS(TARGET_FPS);
 
 	init_game(argc, argv, &current_game_state, colors, textures);
 
@@ -25,13 +26,13 @@ int main(int argc, char **argv, char **env) {
 		DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, colors[BACKGROUND]);
 		//-------------------------Game Area
 		if (current_game_state == SPLASH)
-			splash(&current_game_state, colors);
+			splash(&current_game_state, colors, textures, frameCount);
 		else if (current_game_state == GAME_PLAYING)
-			game_playing(&current_game_state, colors, textures);
+			game_playing(&current_game_state, colors, textures, frameCount);
 		else if (current_game_state == GAME_OVER)
-			game_over(&current_game_state, colors);
+			game_over(&current_game_state, colors, textures, frameCount);
 		else if (current_game_state == SCORE_BOARD)
-			scoreBoard(&current_game_state, colors);
+			scoreBoard(&current_game_state, colors, textures, frameCount);
 		else if (current_game_state == END)
 			break;
 
@@ -88,23 +89,25 @@ void init_game(int argc, char **argv, Gamestate *state, Color *gameColors, Textu
 	}
 }
 
-void splash(Gamestate *state, Color *colors)
+void splash(Gamestate *state, Color *colors, Texture2D *textures, double frameCount)
 {
 	//insert splash logic here
 	DrawText("SPLASH!", 620, 400, 20, colors[BACKGROUND_TEXT]);
 	if (IsKeyPressed(KEY_SPACE))
 		*state = GAME_PLAYING;
 };
-void game_playing(Gamestate *state, Color *colors, Texture2D *textures)
+void game_playing(Gamestate *state, Color *colors, Texture2D *textures, double frameCount)
 {
 	int i;
 	char buffer[50];
+	char turn_text[8];
 	Rectangle recs[9];
 	Rectangle player_x = { 0.0f, 0.0f, 16.0f, 16.0f };
 	Rectangle player_o = { 16.0f, 0.0f, 16.0f, 16.0f };
 
 	static int textured[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
+	static int turn = TURN_X;
+	static int num_turns = 1;
 	const int PADDING = 10;
 	const int OFFSET = 150;	
 	int row_1_x = BOARD_POSX;
@@ -113,6 +116,7 @@ void game_playing(Gamestate *state, Color *colors, Texture2D *textures)
 	int col_1_y = BOARD_POSY;
 	int col_2_y = BOARD_POSY + OFFSET;
 	int col_3_y = col_2_y + OFFSET;
+	sprintf(turn_text, "Turn: %d", num_turns);
 
 	recs[0] = (Rectangle){ (float)row_1_x, (float)col_1_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
 	recs[1] = (Rectangle){ (float)row_2_x, (float)col_1_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
@@ -125,7 +129,6 @@ void game_playing(Gamestate *state, Color *colors, Texture2D *textures)
 	recs[8] = (Rectangle){ (float)row_3_x, (float)col_3_y, (float)BLOCK_HEIGHT, (float)BLOCK_WIDTH };
 
 	//insert game_playing logic here
-	DrawText("GAME PLAYING!", 620, 400, 20, colors[BACKGROUND_TEXT]);
 	//drop shadow
 	DrawRectangle(BOARD_POSX + PADDING, BOARD_POSY + PADDING, BOARD_HEIGHT + PADDING, BOARD_WIDTH + PADDING, BLACK);
 	//board
@@ -143,28 +146,81 @@ void game_playing(Gamestate *state, Color *colors, Texture2D *textures)
 		{
 			//DrawRectangleRec(recs[i], WHITE);
 			DrawTexturePro(textures[0], player_x, recs[i], (Vector2){ 0, 0}, 0, WHITE);
+		}
+		else if (textured[i] == 2)
+		{
+			DrawTexturePro(textures[0], player_o, recs[i], (Vector2){ 0, 0}, 0, WHITE);
 		};
 	};
 
 	
-	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && turn == TURN_X) {
             Vector2 mousePos = GetMousePosition();
 
             // Check if mouse click is within the rectangle
 	    for (i = 0; i <= 8; i++)
-            	if (CheckCollisionPointRec(mousePos, recs[i])) 
+            	if (CheckCollisionPointRec(mousePos, recs[i]) && (textured[i] == 0)) 
 		{
                 	 textured[i] = 1;
+			 num_turns++;
+			 turn = TURN_O;
             	};
-        }
-	
-	if (IsKeyPressed(KEY_SPACE))
-		*state = GAME_OVER;
+        };
+
+	if (turn == TURN_O && num_turns <= 9)
+	{
+		DrawText(turn_text, 620, 70, 30, RED);
+		int new_timer = countDownTimer(3, frameCount, TARGET_FPS);
+		if(new_timer == 0)
+		{
+			for (i = 0; i <= 8; i++)
+			{
+				if (textured[i] == 0)
+				{
+					num_turns++;
+					textured[i] = 2;
+					turn = TURN_X;
+					break;
+				}
+			};
+		};
+	};
+	if (turn == TURN_X && num_turns <= 9) {
+		DrawText(turn_text, 620, 70, 30, BLUE);
+	};
+
+	if (num_turns > 9)
+	{
+		static int gate[2] = { 0, 0 };
+		//draw!
+		if(drawCurtains(GAME_X, GAME_Y, GAME_HEIGHT, GAME_WIDTH, BLUE, 8) == 0)
+		{
+			DrawText("X Score: ", 620, 250, 30, GREEN);
+			if(countDownTimer(1, frameCount, TARGET_FPS) == 0 || gate[0] == 1)
+			{
+				gate[0] = 1;
+				DrawText("Y Score: ", 620, 400, 30, GREEN);
+				if(countDownTimer(1, frameCount, TARGET_FPS) == 0 || gate[1] == 1)
+				{
+					gate[1] = 1;
+					DrawText("Press Space!", 620, 550, 30,  GREEN);
+				}
+			}
+
+		}
+		if (IsKeyPressed(KEY_SPACE))
+		{
+			if(fadeToBlack(1) == 0)
+				*state = GAME_OVER;
+		}
+		return;
+	};
 };
 
-void game_over(Gamestate *state, Color *colors)
+void game_over(Gamestate *state, Color *colors, Texture2D *textures, double frameCount)
 {
 	//insert game_over logic here
+	fadeFromBlack(1);
 	DrawText("GAME OVER!", 620, 400, 20, colors[BACKGROUND_TEXT]);
 	if (IsKeyPressed(KEY_SPACE))
 		*state = SCORE_BOARD;
@@ -172,7 +228,7 @@ void game_over(Gamestate *state, Color *colors)
 		*state = GAME_PLAYING;
 };
 
-void scoreBoard(Gamestate *state, Color *colors)
+void scoreBoard(Gamestate *state, Color *colors, Texture2D *textures, double frameCount)
 {
 	//insert scoreboard logic here
 	DrawText("SCORE BOARD!", 620, 400, 20, colors[BACKGROUND_TEXT]);
@@ -210,11 +266,14 @@ void display_mouse_coords(Vector2 text_position, int text_size, Color text_color
 
 int timer(int seconds, double frameCount, int target_fps)
 {
-	double time = (seconds * target_fps);
-	if (time < (seconds * target_fps) + 1)
-		time += frameCount;
+	static double time = -1;
+	if (time = -1)
+		time = (seconds * target_fps) + frameCount;
 	if (time <= frameCount)
+	{
+		time = -1;
 		return (1);
+	}
 	return (0);
 };
 
@@ -232,6 +291,11 @@ int countDownTimer(int seconds, double frameCount, int target_fps)
 	{
 		countDownSecs--;
 	}
+	if (countDownSecs == 0)
+	{
+		countDownSecs = 0;
+		targetFrames = 0;
+	}
 	return countDownSecs;
 };
 
@@ -246,10 +310,8 @@ int formatTimer(int timeInSeconds, char *buffer)
 	return 0;
 };
 
-int drawCurtains(int posX, int posY, int height, int width, Color color, int speed, int direction)
+int drawCurtains(int posX, int posY, int height, int width, Color color, int speed)
 {
-	//todo: implement directionality
-	(void)direction;
 	static int curtain_height = 0;
 	int curtain_width = width;
 	color.a = 128;
@@ -258,33 +320,41 @@ int drawCurtains(int posX, int posY, int height, int width, Color color, int spe
 	if (curtain_height < height)
 	{
 		curtain_height += 1 + speed;
-		return (0);
-	}
-	return (1);
-};
-
-int fadeToBlack(int posX, int posY, int height, int width, int speed)
-{
-	static unsigned char fade = 0;
-
-	Color color = { 0, 0, 0, fade };
-	DrawRectangle(posX, posY, width, height, color);
-	if (fade == 255)
 		return (1);
-
-	if ((fade + (1 + speed)) <= 255)
-		fade += (1 + speed);
-	else
-		fade = 255;
+	}
+	if (curtain_height > height)
+	{
+		curtain_height = height;
+	}
 	return (0);
 };
 
-int fadeFromBlack(int posX, int posY, int height, int width, int speed)
+int fadeToBlack(int speed)
+{
+	static unsigned char fade = 0;
+	static int counter = 0;
+	Color color = { 0, 0, 0, fade };
+	DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, color);
+	if (fade == 255)
+		return (1);
+	counter += 1 + speed;
+	if (counter == 60)
+	{
+		counter = 0;
+		if (fade + 60 <= 255)
+			fade += 60;
+		else
+			fade = 255;
+	}
+	return (0);
+};
+
+int fadeFromBlack(int speed)
 {
 	static unsigned char fade = 255;
 
 	Color color = { 0, 0, 0, fade };
-	DrawRectangle(posX, posY, width, height, color);
+	DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, color);
 	if (fade == 0)
 		return (1);
 

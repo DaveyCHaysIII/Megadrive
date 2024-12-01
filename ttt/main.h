@@ -45,6 +45,11 @@ enum Gamestate
 	END
 };
 
+enum Turn
+{
+	TURN_X,
+	TURN_O
+};
 enum Directions
 {
 	UP,
@@ -81,10 +86,10 @@ enum color_list
 //------funcs
 
 void init_game(int, char**, Gamestate *, Color *, Texture2D *);
-void splash(Gamestate *, Color *);
-void game_playing(Gamestate *, Color *, Texture2D *);
-void game_over(Gamestate *, Color *);
-void scoreBoard(Gamestate *, Color *);
+void splash(Gamestate *, Color *, Texture2D *, double);
+void game_playing(Gamestate *, Color *, Texture2D *, double);
+void game_over(Gamestate *, Color *, Texture2D *, double);
+void scoreBoard(Gamestate *, Color *, Texture2D *, double);
 
 void display_mouse_coords(Vector2, int, Color);
 double getFrames(void);
@@ -92,8 +97,8 @@ int timer(int, double, int);
 int countDownTimer(int, double, int);
 int formatTimer(int, char *);
 int drawCurtains(int, int, int, int, Color, int);
-int fadeToBlack(int, int, int, int, int);
-int fadeFromBlack(int, int, int, int, int);
+int fadeToBlack(int);
+int fadeFromBlack(int);
 
 //------util funcs
 
