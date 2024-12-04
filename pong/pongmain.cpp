@@ -1,10 +1,14 @@
-#include "pongmain.hpp"
+#include "pheader.hpp"
 #include "ball.hpp"
 #include "paddle.hpp"
+#include "screen.hpp"
 #include <raylib.h>
 
 #define PADDLE_WIDTH 10
 #define PADDLE_HEIGHT 100
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 800
+
 
 int main()
 {
@@ -43,7 +47,7 @@ int main()
 				player2.Move();
 				if (IsKeyPressed(KEY_ENTER))
 					Window.currentScreen = ENDING;
-			}break;
+			} break;
 			case ENDING:
 			{
 				if (IsKeyPressed(KEY_ESCAPE))
