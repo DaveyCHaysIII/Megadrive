@@ -13,8 +13,10 @@
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
 #define MAX_SOUNDS 5
 #define MAX_TEXTURES 10
+#define MAX_TIMERS 10
 #define MAX_CHAR 500
 #define MAX_COLORS 5
+#define MAX_RECTANGLES 10
 #define TARGET_FPS 60
 #define LOGO_POSX 10
 #define LOGO_POSY 10
@@ -36,7 +38,7 @@
 //------structs
 
 
-enum Gamestate
+enum State
 {
 	SPLASH,
 	GAME_PLAYING,
@@ -50,12 +52,28 @@ enum Turn
 	TURN_X,
 	TURN_O
 };
-enum Directions
+
+enum color_list
 {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
+	BACKGROUND,
+	FOREGROUND,
+	BACKGROUND_TEXT,
+	FOREGROUND_TEXT,
+	WINDOW_BACKGROUND,
+	WINDOW_TEXT
+};
+
+enum textures
+{
+	MARQUIS, 
+	SPRITES
+};
+
+enum Rects
+{
+	MARQUIS_SOURCE,
+	PLAYER_X,
+	PLAYER_O
 };
 
 typedef struct Flags
@@ -71,30 +89,42 @@ typedef struct Flags
 	};
 } Flags;
 
-enum color_list
+typedef struct Timer
 {
-	BACKGROUND,
-	FOREGROUND,
-	BACKGROUND_TEXT,
-	FOREGROUND_TEXT,
-	WINDOW_BACKGROUND,
-	WINDOW_TEXT
-};
+
+	int frames;
+	int is_complete;
+} Timer;
+
+
+typedef struct Gamestate
+{
+	int gameState;
+
+	Color colors[MAX_COLORS];
+	Texture2D textures[MAX_TEXTURES];
+	Timer timers[MAX_TIMERS];
+	Rectangle rectangles[MAX_RECTANGLES];
+	double frameCount;
+
+
+} Gamestate;
 
 
 
 //------funcs
 
-void init_game(int, char**, Gamestate *, Color *, Texture2D *);
-void splash(Gamestate *, Color *, Texture2D *, double);
-void game_playing(Gamestate *, Color *, Texture2D *, double);
-void game_over(Gamestate *, Color *, Texture2D *, double);
-void scoreBoard(Gamestate *, Color *, Texture2D *, double);
+void init_game(int, char**, Gamestate *);
+void init_timers(Timer *, int, int);
+void splash(Gamestate *);
+void game_playing(Gamestate *);
+void game_over(Gamestate *);
+void scoreBoard(Gamestate *);
 
-void display_mouse_coords(Vector2, int, Color);
 double getFrames(void);
-int timer(int, double, int);
-int countDownTimer(int, double, int);
+void display_mouse_coords(Vector2, int, Color);
+int startTimer(Timer *, int, double, int);
+void resetTimer(Timer *);
 int formatTimer(int, char *);
 int drawCurtains(int, int, int, int, Color, int);
 int fadeToBlack(int);
@@ -102,7 +132,6 @@ int fadeFromBlack(int);
 
 //------util funcs
 
-std::string GetFullPath(const std::string& filename, const std::string& basePath);
 Texture2D LoadTextureFromPath(const std::string& filename, const std::string& basePath);
 Sound LoadSoundFromPath(const std::string& filename, const std::string& basePath);
 #endif
