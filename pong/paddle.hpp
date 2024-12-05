@@ -1,3 +1,6 @@
+#ifndef PADDLE_HPP_
+#define PADDLE_HPP_
+
 #include "raylib.h"
 
 class Paddle {
@@ -51,3 +54,4 @@ public:
     }
 };
 
+#endif // PADDLE_HPP_

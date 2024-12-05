@@ -99,19 +99,13 @@ int main(int argc, char **argv)
 				controlsScreen.Draw();
 			} break;
 			case GAMEPLAY: {
-				ClearBackground(RAYWHITE);
-				ball.Draw();
-				leftpaddle.Draw();
-				rightpaddle.Draw();
+				gameplayScreen.Draw(ball, leftpaddle, rightpaddle);
 				frm_cnt++;
 				if (frm_cnt % 120 == 0)
 					ball.incrSpeed();
 			} break;
 			case ENDING: {
-				ClearBackground(BLUE);
-				DrawText("Ending Screen", VIEWPORT_X + 20, VIEWPORT_Y + 20, 40, DARKGREEN);
-				DrawText("Tap ESC to EXIT", VIEWPORT_X + 50, VIEWPORT_HEIGHT / 2, 20, DARKGREEN);
-
+				ScoreScreen.Draw();
 			} break;
 		}
         	EndScissorMode();

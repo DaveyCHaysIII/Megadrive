@@ -1,3 +1,6 @@
+#ifndef BALL_HPP_
+#define BALL_HPP_
+
 #include "raylib.h"
 #include <cstdlib>
 #include <random>
@@ -44,7 +47,6 @@ public:
         return false;
     }
 
-
     void Reset(float screenWidth, float screenHeight) {
         position.x = screenWidth / 2;
         position.y = screenHeight / 2;
@@ -77,4 +79,4 @@ public:
     }
 };
 
-
+#endif // BALL_HPP_
