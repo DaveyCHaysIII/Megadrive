@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string.h>
+#include <cstring>
 #include <stdio.h>
 
 //------defines
@@ -15,7 +16,7 @@
 #define MAX_TEXTURES 10
 #define MAX_TIMERS 10
 #define MAX_CHAR 500
-#define MAX_COLORS 5
+#define MAX_COLORS 7
 #define MAX_RECTANGLES 10
 #define TARGET_FPS 60
 #define LOGO_POSX 10
@@ -60,7 +61,8 @@ enum color_list
 	BACKGROUND_TEXT,
 	FOREGROUND_TEXT,
 	WINDOW_BACKGROUND,
-	WINDOW_TEXT
+	WINDOW_TEXT,
+	ACCENT
 };
 
 enum textures
@@ -115,12 +117,13 @@ typedef struct Gamestate
 //------funcs
 
 void init_game(int, char**, Gamestate *);
-void init_timers(Timer *, int, int);
+void init_timers(Timer *, int);
 void splash(Gamestate *);
 void game_playing(Gamestate *);
 void game_over(Gamestate *);
 void scoreBoard(Gamestate *);
 
+int checkWinner(int, const int *);
 double getFrames(void);
 void display_mouse_coords(Vector2, int, Color);
 int startTimer(Timer *, int, double, int);
