@@ -1,49 +1,85 @@
-#include "pongmain.hpp"
 #include "ball.hpp"
 #include "paddle.hpp"
+#include "screen.hpp"
+#include <cstdio>
+#include <cstring>
 #include <raylib.h>
 
 #define PADDLE_WIDTH 10
 #define PADDLE_HEIGHT 100
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 800
+#define VIEWPORT_WIDTH 800
+#define VIEWPORT_HEIGHT 600
+#define VIEWPORT_X ((WINDOW_WIDTH - VIEWPORT_WIDTH) / 2)
+#define VIEWPORT_Y ((WINDOW_HEIGHT - VIEWPORT_HEIGHT) / 2)
 
-int main()
+#define COMPUTER 1
+#define PLAYER 0
+
+static int initializePaddlesByPlayerType(char *, Paddle *, Paddle *);
+
+typedef enum GameScreen { TITLE, GAMEPLAY, ENDING } GameScreen_t;
+
+/**
+ * main - Entry point for pong game
+ * @argc: Number of arguments passed into game
+ * @argc: Matrix of passed arguments
+ *
+ * Return: 0 on success, otherwise 1
+ */
+
+int main(int argc, char **argv)
 {
-	window_fmt_t Window;
-	Paddle player1 (250, Window.WindowHeight / 2, PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_W, KEY_S, BLUE);
-	Paddle player2 (1030 - PADDLE_WIDTH, Window.WindowHeight / 2, PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_UP, KEY_DOWN, RED);
-	Ball ball(Window.WindowWidth, Window.WindowHeight, 10.0f);
+	// Check if Game is executed properly
+	if (argc == 1 || argc > 2)
+	{
+		std::printf("USAGE: ./pong <#player>\n");
+		std::printf("Where # is number of players, 0 - 2\n");
+		return (1);
+	}
+
+	// Declare and/or init variables
+	Paddle leftpaddle, rightpaddle;
+	GameScreen_t currentScreen = TITLE;
+	Title controlsScreen("Pong Title", VIEWPORT_X, VIEWPORT_Y);
+	Gameplay gameplayScreen("Pong Gameplay", VIEWPORT_X, VIEWPORT_Y);
+	Ending ScoreScreen("Scores", VIEWPORT_X, VIEWPORT_Y);
+	Ball ball(WINDOW_WIDTH, WINDOW_HEIGHT, 10.0f);
 	int frm_cnt = 0;
 
-	InitWindow(Window.WindowWidth, Window.WindowHeight, "Pong Game");
+	initializePaddlesByPlayerType(argv[1], &leftpaddle, &rightpaddle);
+
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pong Game");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
 	{
 		// updates for specific screens
-		switch (Window.currentScreen) {
+		switch (currentScreen) {
 			case TITLE:
 			{
 				if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
-					Window.currentScreen = GAMEPLAY;
+					currentScreen = GAMEPLAY;
 			} break;
 			case GAMEPLAY:
 			{
 				float deltatime = GetFrameTime();
 
 				//update ball
-				ball.Move(deltatime);
+				ball.Update(deltatime);
 				ball.CheckCollisionWithWalls();
-				ball.CheckCollisionWithPaddle(player1.position, player1.p_width, player1.p_height);
-				ball.CheckCollisionWithPaddle(player2.position, player2.p_width, player2.p_height);
-				if (ball.position.x < Window.ViewportX || ball.position.x > (Window.ViewportX + Window.ViewportWidth))
-				ball.Reset(Window.WindowWidth, Window.WindowHeight);
+				ball.CheckCollisionWithPaddle(leftpaddle.position, leftpaddle.p_width, leftpaddle.p_height);
+				ball.CheckCollisionWithPaddle(rightpaddle.position, rightpaddle.p_width, rightpaddle.p_height);
+				if (ball.position.x < VIEWPORT_X || ball.position.x > (VIEWPORT_X + VIEWPORT_WIDTH))
+				ball.Reset(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 				// Update paddles
-				player1.Move();
-				player2.Move();
+				leftpaddle.Update(ball.position);
+				rightpaddle.Update(ball.position);
 				if (IsKeyPressed(KEY_ENTER))
-					Window.currentScreen = ENDING;
-			}break;
+					currentScreen = ENDING;
+			} break;
 			case ENDING:
 			{
 				if (IsKeyPressed(KEY_ESCAPE))
@@ -55,28 +91,26 @@ int main()
 		BeginDrawing();
 		ClearBackground(BLACK);
 
-		BeginScissorMode(Window.ViewportX, Window.ViewportY, Window.ViewportWidth, Window.ViewportHeight);
+		BeginScissorMode(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	
 		// Drawing switch
-		switch (Window.currentScreen) {
+		switch (currentScreen) {
 			case TITLE: {
-				ClearBackground(BLUE);
-				DrawText("Title Screen: put options here", Window.ViewportX + 20, Window.ViewportY + 20, 40, DARKGREEN);
-				DrawText("Tap ENTER or TAP to go to GAMEPLAY", Window.ViewportX + 50, Window.ViewportHeight / 2, 20, DARKGREEN);
+				controlsScreen.Draw();
 			} break;
 			case GAMEPLAY: {
 				ClearBackground(RAYWHITE);
 				ball.Draw();
-				player1.Draw();
-				player2.Draw();
+				leftpaddle.Draw();
+				rightpaddle.Draw();
 				frm_cnt++;
 				if (frm_cnt % 120 == 0)
 					ball.incrSpeed();
 			} break;
 			case ENDING: {
 				ClearBackground(BLUE);
-				DrawText("Ending Screen", Window.ViewportX + 20, Window.ViewportY + 20, 40, DARKGREEN);
-				DrawText("Tap ESC to EXIT", Window.ViewportX + 50, Window.ViewportHeight / 2, 20, DARKGREEN);
+				DrawText("Ending Screen", VIEWPORT_X + 20, VIEWPORT_Y + 20, 40, DARKGREEN);
+				DrawText("Tap ESC to EXIT", VIEWPORT_X + 50, VIEWPORT_HEIGHT / 2, 20, DARKGREEN);
 
 			} break;
 		}
@@ -87,4 +121,42 @@ int main()
 	CloseWindow();
 
 	return (0);
+}
+
+/**
+ * initializePaddleByPlayerType - initializes left and right paddles based on number of players
+ * @player: char * - Number of players
+ * @left: Paddle * - Pointer to left paddle
+ * @right: Paddle * - Pointer to right paddle
+ *
+ * Return: 0 on success, otherwise 1
+ */
+
+static int initializePaddlesByPlayerType(char *player, Paddle *left, Paddle *right) {
+	if (std::strcmp(player, "0player") == 0)
+	{
+		left->init(250, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_W, KEY_S, BLUE, COMPUTER);
+		right->init(1030 - PADDLE_WIDTH, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_UP, KEY_DOWN, RED, COMPUTER);
+		return (0);
+	}
+	else if (std::strcmp(player, "1player") == 0)
+	{
+		left->init(250, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_W, KEY_S, BLUE, COMPUTER);
+		right->init(1030 - PADDLE_WIDTH, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_UP, KEY_DOWN, RED, PLAYER);
+		return (0);
+	}
+	else if (std::strcmp(player, "2player") == 0)
+	{
+		left->init(250, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT,
+		3.0f, KEY_W, KEY_S, BLUE, PLAYER);
+		right->init(1030 - PADDLE_WIDTH, (WINDOW_HEIGHT / 2) - (PADDLE_HEIGHT / 2), PADDLE_WIDTH, PADDLE_HEIGHT, 3.0f, KEY_UP, KEY_DOWN, RED, PLAYER);
+		return(0);
+	}
+	else
+	{
+		std::printf("USAGE: ./pong <#player>\n");
+		std::printf("Where # is number of players, 0 - 2\n");
+		return (1);
+	}
+
 }
