@@ -14,7 +14,7 @@ public:
           speed{200.0f, 200.0f},
           radius{ballRadius} {}
 
-    void Move(float deltaTime) {
+    void Update(float deltaTime) {
         position.x += speed.x * deltaTime;
         position.y += speed.y * deltaTime;
     }
