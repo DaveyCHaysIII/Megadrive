@@ -1,4 +1,10 @@
+#ifndef SCREEN_HPP_
+#define SCREEN_HPP_
+
 #include <raylib.h>
+#include "paddle.hpp"
+#include "ball.hpp"
+
 class Screen {
 public:
     const char *title;
@@ -23,9 +29,18 @@ public:
 class Gameplay : public Screen {
 public:
     using Screen::Screen; // use Screen constructor
+
+    void Draw(Ball ball, Paddle left, Paddle right) {
+        ClearBackground(RAYWHITE);
+	ball.Draw();
+	left.Draw();
+	right.Draw();
+    }
 };
 
 class Ending : public Screen {
 public:
     using Screen::Screen; // use Screen constructor
 };
+
+#endif // SCREEN_HPP_

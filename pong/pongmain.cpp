@@ -99,10 +99,7 @@ int main(int argc, char **argv)
 				controlsScreen.Draw();
 			} break;
 			case GAMEPLAY: {
-				ClearBackground(RAYWHITE);
-				ball.Draw();
-				leftpaddle.Draw();
-				rightpaddle.Draw();
+				gameplayScreen.Draw(ball, leftpaddle, rightpaddle);
 				frm_cnt++;
 				if (frm_cnt % 120 == 0)
 					ball.incrSpeed();
