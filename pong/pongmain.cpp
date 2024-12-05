@@ -105,10 +105,7 @@ int main(int argc, char **argv)
 					ball.incrSpeed();
 			} break;
 			case ENDING: {
-				ClearBackground(BLUE);
-				DrawText("Ending Screen", VIEWPORT_X + 20, VIEWPORT_Y + 20, 40, DARKGREEN);
-				DrawText("Tap ESC to EXIT", VIEWPORT_X + 50, VIEWPORT_HEIGHT / 2, 20, DARKGREEN);
-
+				ScoreScreen.Draw();
 			} break;
 		}
         	EndScissorMode();
