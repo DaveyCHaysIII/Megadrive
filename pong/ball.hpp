@@ -33,14 +33,16 @@ public:
             speed.y += 10.0f;
     }
 
-    void CheckCollisionWithWalls() {
+    void CheckCollisionWithWalls(Sound sound) {
         if (position.y - radius <= 100 || position.y + radius >= (GetScreenHeight() - 100)) {
+            PlaySound(sound);
             speed.y *= -1; // Reverse vertical direction
         }
     }
 
-    bool CheckCollisionWithPaddle(Vector2 paddleV, float width, float height) {
+    bool CheckCollisionWithPaddle(Vector2 paddleV, float width, float height, Sound sound) {
         if (CheckCollisionCircleRec(position, radius, Rectangle{paddleV.x, paddleV.y, width, height})) {
+            PlaySound(sound);
             speed.x *= -1; // Reverse horizontal direction
             return true;
         }

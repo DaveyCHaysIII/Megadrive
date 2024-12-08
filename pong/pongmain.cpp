@@ -19,7 +19,7 @@
 
 static int initializePaddlesByPlayerType(char *, Paddle *, Paddle *);
 
-typedef enum GameScreen { TITLE, GAMEPLAY, ENDING } GameScreen_t;
+typedef enum GameScreen { TITLE, GAMEPLAY } GameScreen_t; // TODO: Add scoring and gameover screen
 
 /**
  * main - Entry point for pong game
@@ -52,9 +52,17 @@ int main(int argc, char **argv)
 
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Pong Game");
 	SetTargetFPS(60);
+	InitAudioDevice();
+
+	Music music = LoadMusicStream("assets/Funtime_Frolick.mp3");
+	Sound collisionSound = LoadSound("assets/boop.wav");
+
+	SetMusicVolume(music, .5);
+	PlayMusicStream(music);
 
 	while (!WindowShouldClose())
 	{
+		UpdateMusicStream(music);
 		// updates for specific screens
 		switch (currentScreen) {
 			case TITLE:
@@ -68,23 +76,23 @@ int main(int argc, char **argv)
 
 				//update ball
 				ball.Update(deltatime);
-				ball.CheckCollisionWithWalls();
-				ball.CheckCollisionWithPaddle(leftpaddle.position, leftpaddle.p_width, leftpaddle.p_height);
-				ball.CheckCollisionWithPaddle(rightpaddle.position, rightpaddle.p_width, rightpaddle.p_height);
+				ball.CheckCollisionWithWalls(collisionSound);
+				ball.CheckCollisionWithPaddle(leftpaddle.position, leftpaddle.p_width, leftpaddle.p_height, collisionSound);
+				ball.CheckCollisionWithPaddle(rightpaddle.position, rightpaddle.p_width, rightpaddle.p_height, collisionSound);
 				if (ball.position.x < VIEWPORT_X || ball.position.x > (VIEWPORT_X + VIEWPORT_WIDTH))
 				ball.Reset(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 				// Update paddles
 				leftpaddle.Update(ball.position);
 				rightpaddle.Update(ball.position);
-				if (IsKeyPressed(KEY_ENTER))
-					currentScreen = ENDING;
+				// if (IsKeyPressed(KEY_ENTER))
+				//	currentScreen = ENDING;
 			} break;
-			case ENDING:
-			{
-				if (IsKeyPressed(KEY_ESCAPE))
-					WindowShouldClose();
-			} break;
+			// case ENDING:
+			// {
+			//	if (IsKeyPressed(KEY_ESCAPE))
+			//		WindowShouldClose();
+			// } break;
 		}
 
 		// Begin Drawing
@@ -104,14 +112,20 @@ int main(int argc, char **argv)
 				if (frm_cnt % 120 == 0)
 					ball.incrSpeed();
 			} break;
-			case ENDING: {
-				ScoreScreen.Draw();
-			} break;
+			// case ENDING: {
+			//	ScoreScreen.Draw();
+			// } break;
 		}
         	EndScissorMode();
 
 		EndDrawing();
 	}
+	// Unloading Audio
+	UnloadMusicStream(music);
+	UnloadSound(collisionSound);
+
+	CloseAudioDevice();
+
 	CloseWindow();
 
 	return (0);
