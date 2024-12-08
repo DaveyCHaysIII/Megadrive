@@ -35,6 +35,7 @@ public:
 	ball.Draw();
 	left.Draw();
 	right.Draw();
+	DrawText("Press ESC to exit", viewportCoord.x + 600, viewportCoord.y + 580, 20, LIGHTGRAY);
     }
 };
 
