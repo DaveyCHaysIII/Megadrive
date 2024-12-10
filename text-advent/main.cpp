@@ -12,7 +12,7 @@ int main(int argc, char **argv, char **env) {
 	SetTargetFPS(TARGET_FPS);
 
 	init_game(argc, argv, &state);
-
+	
 	while (!WindowShouldClose())
 	{
 		state.frameCount = getFrames();
@@ -37,6 +37,7 @@ int main(int argc, char **argv, char **env) {
 
 		display_mouse_coords(DEFAULT_POSITION, 20, state.colors[WINDOW_TEXT]);
 		EndDrawing();
+		updateState(&state);
 		//-------------------------End
 
 		if (IsKeyPressed(KEY_ESCAPE))
@@ -55,35 +56,47 @@ void init_game(int argc, char **argv, Gamestate *state)
 {
 	if (argc < 2)
 	{
+	 
 		state->gameState   = SPLASH;
-		state->m_off       = 0;
-		state->s_off       = 0;
-		state->d_off       = 0;
-		state->disposition = 0;
-		state->expression  = 0;
+		state->m_off       = 0.0f;
+		state->s_off       = 0.0f;
+		state->d_off       = 0.0f;
+		state->b_off       = 0.0f;
+		state->disposition = 0.0f;
+		state->expression  = 0.0f;
+		state->movement    = 0.0f;
 
 		state->colors[BACKGROUND]        = BLACK;
 		state->colors[DIALOGUE]          = BLACK;
 		state->colors[LILGREEN_TEXT]     = GREEN;
 		state->colors[NARRATOR_TEXT]     = RED;
-		state->colors[WINDOW_BACKGROUND] = BLACK;
+		state->colors[WINDOW_BACKGROUND] = BLOOD;
 		state->colors[WINDOW_TEXT]       = RED;
 		state->colors[ACCENT]            = YELLOW;
 		
 
 		state->textures[MARQUIS]     = LoadTexture("./assets/marquis.png");
+		state->textures[BACKDROP]    = LoadTexture("./assets/forest_bg.png");
 		state->textures[SPRITES]     = LoadTexture("./assets/sprites.png");
-		state->textures[DIRECTIONAL] = LoadTexture("./assets/sprites.png");
+		state->textures[DIRECTIONAL] = LoadTexture("./assets/directional.png");
 		state->textures[SCORE]       = LoadTexture("./assets/score.png");
 
-		state->rectangles[MARQUIS]       = { 0.0f + (32 * offset), 0.0f, 64.0f, 16.0f };
-		state->rectangles[BACKDROP_1]    = {};
-		state->rectangles[BACKDROP_2]    = {};
-		state->rectangles[BACKDROP_3]    = {};
-		state->rectangles[BACKDROP_4]    = {};
-		state->rectangles[DIRECTIONAL]   = {};
-		state->rectangles[LILGREEN_BASE] =
-
+		float marquis_source_y       = (0.0f + (32.0f * state->m_off));
+		float backdrop_source_x      = (80.0f * (std::fmod(state->b_off, 2.0f)));
+		float backdrop_source_y      = (60.0f * (std::floor(state->b_off / 2.0f)));
+		float directional_source_y   = (0.0f * (48.0f * state->d_off));
+		float lilgreen_base_source_y = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+	       	float lilgreen_anim_source_x = (0.0f + (16.0f * state->expression));
+		float lilgreen_anim_source_y = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+		float lilgreen_dir_source_x  = (96.0f + (16.0f * state->movement));
+		float lilgreen_dir_source_y  = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+		state->rectangles[MARQUIS_SOURCE]           = { 0.0f, marquis_source_y, 64.0f, 16.0f };
+		state->rectangles[BACKDROP_SOURCE]          = { backdrop_source_x, backdrop_source_y, 80.0f, 60.0f };
+		state->rectangles[DIRECTIONAL_SOURCE]       = { 0.0f, directional_source_y, 48.0f, 48.0f };
+		state->rectangles[LILGREEN_BASE_SOURCE]     = { 0.0f, lilgreen_base_source_y, 16.0f, 16.0f };
+		state->rectangles[LILGREEN_ANIMATED_SOURCE] = { lilgreen_anim_source_x, lilgreen_anim_source_y, 16.0f, 16.0f };
+		state->rectangles[LILGREEN_DIR_SOURCE]      = { lilgreen_dir_source_x, lilgreen_dir_source_y, 16.0f, 16.0f } ;
+		state->rectangles[SCORE_SOURCE]		    = { 0.0f, 0.0f, 80.0f, 60.0f };
 		init_timers(state->timers, MAX_TIMERS);
 		state->frameCount = 0;
 	}
@@ -113,13 +126,32 @@ void init_game(int argc, char **argv, Gamestate *state)
 		}
 		else 
 		{
-			//FOREST
-
-
 		}
 
 	}
 	*/
+}
+
+void updateState(Gamestate *state)
+{
+	float marquis_source_y       = (0.0f + (32.0f * state->m_off));
+	float backdrop_source_x      = (80.0f * (std::fmod(state->b_off, 2.0f)));
+	float backdrop_source_y      = (60.0f * (std::floor(state->b_off / 2.0f)));
+	float directional_source_y   = (0.0f * (48.0f * state->d_off));
+	float lilgreen_base_source_y = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+	float lilgreen_anim_source_x = (0.0f + (16.0f * state->expression));
+	float lilgreen_anim_source_y = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+	float lilgreen_dir_source_x  = (96.0f + (16.0f * state->movement));
+	float lilgreen_dir_source_y  = (0.0f + (32.0f * state->s_off) + (16.0f * state->disposition));
+
+	state->rectangles[MARQUIS_SOURCE]           = { 0.0f, marquis_source_y, 64.0f, 16.0f };
+	state->rectangles[BACKDROP_SOURCE]          = { backdrop_source_x, backdrop_source_y, 80.0f, 60.0f };
+	state->rectangles[DIRECTIONAL_SOURCE]       = { 0.0f, directional_source_y, 48.0f, 48.0f };
+	state->rectangles[LILGREEN_BASE_SOURCE]     = { 0.0f, lilgreen_base_source_y, 16.0f, 16.0f };
+	state->rectangles[LILGREEN_ANIMATED_SOURCE] = { lilgreen_anim_source_x, lilgreen_anim_source_y, 16.0f, 16.0f };
+	state->rectangles[LILGREEN_DIR_SOURCE]      = { lilgreen_dir_source_x, lilgreen_dir_source_y, 16.0f, 16.0f } ;
+	state->rectangles[SCORE_SOURCE]		    = { 0.0f, 0.0f, 80.0f, 60.0f };
+
 }
 
 void init_timers (Timer *timers, int num_timers)
@@ -135,12 +167,18 @@ void init_timers (Timer *timers, int num_timers)
 void splash(Gamestate *state)
 {
 	//-----------------------------------SPLASH
-	Rectangle marquis_dest = { 340.0f, 200.0f, 600.0f, 150.0f };
+	Rectangle marquis_dest = { 256.0f, 200.0f, 768.0f, 192.0f };
+	Rectangle sprite_dest = { 350.0f, 415.0f, 128.0f, 128.0f };
 	Rectangle marquis_source = state->rectangles[MARQUIS_SOURCE];
+	Rectangle sprite_source = state->rectangles[LILGREEN_BASE_SOURCE];
 	Texture2D texture = state->textures[MARQUIS];
+	Texture2D sprite = state->textures[SPRITES];
 
-	DrawText("Press [SPACE] to play!", 465, 550, 30, state->colors[BACKGROUND_TEXT]);
+	DrawText("Press [SPACE] to play!", 465, 550, 30, state->colors[NARRATOR_TEXT]);
+	DrawText("I'm ready for my next adventure!", 433, 420, 30, state->colors[LILGREEN_TEXT]);
 	DrawTexturePro(texture, marquis_source, marquis_dest, (Vector2){ 0, 0}, 0, WHITE);
+	DrawTexturePro(sprite, sprite_source, sprite_dest, (Vector2){sprite_dest.width /2, sprite_dest.height / 2}, -30, WHITE);
+	//DrawRectangleRec(sprite_dest, WHITE);
 	if (IsKeyPressed(KEY_SPACE))
 		state->gameState = GAME_PLAYING;
 };
@@ -149,8 +187,51 @@ void splash(Gamestate *state)
 void game_playing(Gamestate *state)
 {
 
+	static float hunger_lvl = 80.0f;
+	static Color hunger_bar_color = PINK;
+
 	//---------------------------------MAIN GAME
-	
+	Rectangle background_dest = { GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT };
+	Rectangle background_source = state->rectangles[BACKDROP_SOURCE];
+	Rectangle sprite_dest = { 320.0f, 502.0f, 128.0f, 128.0f };
+	Rectangle sprite_source = state->rectangles[LILGREEN_ANIMATED_SOURCE];
+	Rectangle directional_dest = {};
+	Rectangle directional_source = {};
+	Rectangle dialogue = { 440.0f, 480.0f, 260.0f, 55.0f };
+	Rectangle narrator = {};
+	Rectangle north  =   { 930.0f, 500.0f, 35.0f, 35.0f };
+	Rectangle south  =   { 930.0f, 580.0f, 35.0f, 35.0f };
+	Rectangle west   =   { 890.0f, 540.0f, 35.0f, 35.0f };
+	Rectangle east   =   { 970.0f, 540.0f, 35.0f, 35.0f };
+	Rectangle status =   { 240.0f, 100.0f, 215.0f, 50.0f };
+	Rectangle hunger =   { 351.0f, 118.0f, hunger_lvl, 10.0f };
+	Texture2D texture = state->textures[BACKDROP];
+	Texture2D sprite = state->textures[SPRITES];
+	DrawTexturePro(texture, background_source, background_dest, (Vector2){0, 0}, 0, WHITE);
+
+	DrawRectangleRec(dialogue, BLACK);
+	DrawRectangleRec(north, DARKGRAY);
+	DrawRectangleRec(south, DARKGRAY);
+	DrawRectangleRec(west, DARKGRAY);
+	DrawRectangleRec(east, DARKGRAY);
+	DrawRectangleRec(status, BLACK);
+	DrawRectangleRec(hunger, hunger_bar_color);
+	DrawTexturePro(sprite, sprite_source, sprite_dest, (Vector2){0,0}, 0, WHITE);
+	DrawText("Which way should I go?", 455, 500, 20, state->colors[LILGREEN_TEXT]);
+	DrawText("HUNGER [           ]", 250, 115, 20, WHITE);
+	if (IsKeyPressed(KEY_N))
+		hunger_lvl = hunger_lvl - 8;
+	if (hunger_lvl <= 64)
+		state->b_off = 1.0f;
+	if (hunger_lvl <= 48)
+	{
+		hunger_bar_color = MAROON;
+		state->b_off = 2.0f;
+	}
+	if (hunger_lvl <= 24)
+		state->b_off = 3.0f;
+	if (hunger_lvl <= 0)
+		state->gameState = GAME_OVER;
 	if (IsKeyPressed(KEY_SPACE))
 		state->gameState = GAME_OVER;
 };
@@ -159,7 +240,7 @@ void game_playing(Gamestate *state)
 void game_over(Gamestate *state)
 {
 	//---------------------------------GAME OVER
-	DrawText("GAME OVER!", 620, 400, 20, state->colors[BACKGROUND_TEXT]);
+	DrawText("GAME OVER!", 620, 400, 20, state->colors[NARRATOR_TEXT]);
 	fadeFromBlack(1);
 	if (IsKeyPressed(KEY_SPACE))
 		state->gameState = SCORE_BOARD;
@@ -170,7 +251,12 @@ void game_over(Gamestate *state)
 void scoreBoard(Gamestate *state)
 {
 	//---------------------------------SCORE BOARD
-	DrawText("SCORE BOARD!", 620, 400, 20, state->colors[BACKGROUND_TEXT]);
+	Rectangle score_dest = { GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT };
+	Rectangle score_source = state->rectangles[SCORE_SOURCE];
+	Texture2D texture = state->textures[SCORE];
+
+	DrawTexturePro(texture, score_source, score_dest, (Vector2){0, 0}, 0, WHITE);
+
 	fadeFromBlack(1);
 	if (IsKeyPressed(KEY_SPACE))
 		state->gameState = END;

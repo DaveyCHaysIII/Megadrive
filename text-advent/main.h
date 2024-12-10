@@ -9,6 +9,7 @@
 #include <string.h>
 #include <cstring>
 #include <stdio.h>
+#include <cmath>
 
 //------defines
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
@@ -16,7 +17,7 @@
 #define MAX_TEXTURES 10
 #define MAX_TIMERS 10
 #define MAX_CHAR 500
-#define MAX_COLORS 7
+#define MAX_COLORS 10
 #define MAX_RECTANGLES 10
 #define TARGET_FPS 60
 #define LOGO_POSX 10
@@ -32,6 +33,7 @@
 #define GAME_Y 100
 #define GAME_HEIGHT 600
 #define GAME_WIDTH 800
+#define BLOOD (Color){30, 10, 0, 255}
 #define SET_FLAG(flags, flag) ((flags).all_flags |= (flag))
 #define CLEAR_FLAG(flags, flag) ((flags).all_flags &= ~(flag))
 #define CHECK_FLAG(flags, flag) ((flags).all_flags & (flag))
@@ -51,9 +53,9 @@ enum State
 enum color_list
 {
 	BACKGROUND,
-	FOREGROUND,
-	BACKGROUND_TEXT,
-	FOREGROUND_TEXT,
+	DIALOGUE,
+	LILGREEN_TEXT,
+	NARRATOR_TEXT,
 	WINDOW_BACKGROUND,
 	WINDOW_TEXT,
 	ACCENT
@@ -70,15 +72,13 @@ enum textures
 
 enum Rects
 {
-	MARQUIS,
-	BACKDROP_1,
-	BACKDROP_2,
-	BACKDROP_3,
-	BACKDROP_4,
-	DIRECTIONAL,
-	LILGREEN_BASE,
-	LILGREEN_ANIMATED,
-	LILGREEN_DIRECTIONAL
+	MARQUIS_SOURCE,
+	BACKDROP_SOURCE,
+	DIRECTIONAL_SOURCE,
+	LILGREEN_BASE_SOURCE,
+	LILGREEN_ANIMATED_SOURCE,
+	LILGREEN_DIR_SOURCE,
+	SCORE_SOURCE
 };
 
 typedef struct Flags
@@ -111,9 +111,13 @@ typedef struct Timer
 typedef struct Gamestate
 {
 	int gameState;
-	float offSet;
-	float disposition;
-	float expression;
+	float m_off;		//marquis offset, 0-5
+	float s_off;		//sprite offset, 0-5
+	float d_off;		//directional offset, 0-5
+	float b_off; 		//background offset, 0-3, which active panel
+	float disposition;      //good/bad 0-1
+	float expression;	//expressions 0-5
+	float movement;		//movement for directinal 0-1
 
 
 	Color colors[MAX_COLORS];
@@ -131,6 +135,7 @@ typedef struct Gamestate
 //------funcs
 
 void init_game(int, char**, Gamestate *);
+void updateState(Gamestate *);
 void init_timers(Timer *, int);
 void splash(Gamestate *);
 void game_playing(Gamestate *);
