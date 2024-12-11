@@ -19,3 +19,5 @@ text_advent:
 
 ttt:
 	$(MAKE) -C ttt
+
+.PHONY: launcher pong rps text_advent ttt

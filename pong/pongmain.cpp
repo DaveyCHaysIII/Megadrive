@@ -54,8 +54,8 @@ int main(int argc, char **argv)
 	SetTargetFPS(60);
 	InitAudioDevice();
 
-	Music music = LoadMusicStream("assets/Funtime_Frolick.mp3");
-	Sound collisionSound = LoadSound("assets/boop.wav");
+	Music music = LoadMusicStream("pong/assets/Funtime_Frolick.mp3");
+	Sound collisionSound = LoadSound("pong/assets/boop.wav");
 
 	SetMusicVolume(music, .5);
 	PlayMusicStream(music);
