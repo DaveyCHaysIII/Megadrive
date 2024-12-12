@@ -227,6 +227,7 @@ void game_playing(Gamestate *state)
 	{
 		hunger_bar_color = MAROON;
 		state->b_off = 2.0f;
+		state->disposition = 1.0f;
 	}
 	if (hunger_lvl <= 24)
 		state->b_off = 3.0f;

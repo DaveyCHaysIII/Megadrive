@@ -3,7 +3,7 @@
 //---------------------------------------Main function
 
 int main(int argc, char **argv, char **env) {
-	SetTraceLogLevel(LOG_ERROR);
+	//SetTraceLogLevel(LOG_ERROR);
 	// Initialize the window
 	InitWindow(1280, 800, "Raylib Game");
 	InitAudioDevice();
@@ -66,8 +66,9 @@ void init_game(int argc, char **argv, Gamestate *state)
 		state->colors[ACCENT] = BLUE;
 		
 
-		state->textures[MARQUIS] = LoadTexture("./assets/ttt_marquis.png");
-		state->textures[SPRITES] = LoadTexture("./assets/ttt_sprites.png");
+		state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
+		state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
+		state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 		state->rectangles[MARQUIS_SOURCE] = { 0.0f, 0.0f, 64.0f, 16.0f };
 		state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f }; 	
@@ -93,8 +94,9 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->colors[ACCENT] = RED;
 
 
-			state->textures[MARQUIS] = LoadTexture("./assets/ttt_marquis.png");
-			state->textures[SPRITES] = LoadTexture("./assets/ttt_sprites.png");
+			state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
+			state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
+			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 16.0f, 64.0f, 16.0f };
 			state->rectangles[PLAYER_X] = { 32.0f, 0.0f, 16.0f, 16.0f };
@@ -117,8 +119,9 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->colors[WINDOW_TEXT] = WHITE;
 			state->colors[ACCENT] = GOLD;
 
-			state->textures[MARQUIS] = LoadTexture("./assets/ttt_marquis.png");
-			state->textures[SPRITES] = LoadTexture("./assets/ttt_sprites.png");
+			state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
+			state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
+			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 32.0f, 64.0f, 16.0f };
 			state->rectangles[PLAYER_X] = { 0.0f, 16.0f, 16.0f, 16.0f };
@@ -140,8 +143,9 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->colors[WINDOW_TEXT] = ORANGE;
 			state->colors[ACCENT] = BLACK;
 
-			state->textures[MARQUIS] = LoadTexture("./assets/ttt_marquis.png");
-			state->textures[SPRITES] = LoadTexture("./assets/ttt_sprites.png");
+			state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
+			state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
+			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 48.0f, 64.0f, 16.0f };
 			state->rectangles[PLAYER_X] = { 32.0f, 16.0f, 16.0f, 16.0f }; 	
@@ -164,13 +168,13 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->colors[WINDOW_TEXT] = GREEN;
 			state->colors[ACCENT] = BLUE;
 
-			state->textures[MARQUIS] = LoadTexture("./assets/ttt_marquis.png");
-			state->textures[SPRITES] = LoadTexture("./assets/ttt_sprites.png");
+			state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
+			state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
+			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 0.0f, 64.0f, 16.0f };
 			state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f }; 	
 			state->rectangles[PLAYER_O] = { 16.0f, 0.0f, 16.0f, 16.0f };
-
 			init_timers(state->timers, MAX_TIMERS);
 			state->frameCount = 0;
 
@@ -397,7 +401,11 @@ void game_over(Gamestate *state)
 void scoreBoard(Gamestate *state)
 {
 	//insert scoreboard logic here
-	DrawText("SCORE BOARD!", 620, 400, 20, state->colors[BACKGROUND_TEXT]);
+	Rectangle score_source = { 0.0f, 0.0f, 80.0f, 60.0f };
+	Rectangle score_dest = { GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT };
+	Texture2D texture = state->textures[SCORE];
+
+	DrawTexturePro(texture, score_source, score_dest, (Vector2){0, 0}, 0, WHITE);
 	fadeFromBlack(1);
 	if (IsKeyPressed(KEY_SPACE))
 		state->gameState = END;

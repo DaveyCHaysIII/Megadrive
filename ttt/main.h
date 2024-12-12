@@ -68,7 +68,8 @@ enum color_list
 enum textures
 {
 	MARQUIS, 
-	SPRITES
+	SPRITES,
+	SCORE
 };
 
 enum Rects
