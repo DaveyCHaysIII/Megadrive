@@ -1,19 +1,21 @@
 #ifndef BBHEADER_HPP_
 #define BBHEADER_HPP_
 
-/***** LIBRARIES ******/
+/****** LIBRARIES ******/
 
 #include <raylib.h>
 
-namespace brick_breaker {
+/****** CLASSES ******/
+
+namespace brickbreaker {
 class Screen_Draw {
 public:
-	char *game_title;
+	const char *game_title;
 	float screen_width, screen_height;
 	float viewport_width, viewport_height;
 	Vector2 viewportCoord;
 
-	Screen_Draw(char *title, float screen_w, float screen_h, float viewport_w, float viewport_h)
+	Screen_Draw(const char *title, float screen_w, float screen_h, float viewport_w, float viewport_h)
 	: game_title(title),
 	  screen_width(screen_w),
 	  screen_height(screen_h),
