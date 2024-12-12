@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **env) {
 		}
 		else if (pid == 0)
 		{
-			const char *path = "/projects/saves/my_game";
+			const char *path = "./game";
 			execve(path, argv, env);
 		}
 		else
