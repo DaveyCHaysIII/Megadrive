@@ -1,20 +1,20 @@
 .DEFAULT_GOAL = all # makes all the default
 
 # default target
-all: brick_breaker launcher pong text_advent ttt #add individual target rule here and uncomment below
+all: brick_breaker pong text_advent ttt #add individual target rule here and uncomment below
 	mkdir -pv ./build
 
 # individual targets
 brick_breaker:
 	$(MAKE) -C brick_breaker
 
-launcher:
-	$(MAKE) -C launcher
+# launcher:
+#	$(MAKE) -C launcher
 
 pong:
 	$(MAKE) -C pong
 
-#rps:
+# rps:
 #	$(MAKE) -C rps
 
 text_advent:

@@ -1,10 +1,15 @@
 CC = g++
 CPPFLAGS = -L/usr/local/lib/libraylib.a -lraylib -lGL -lGLU -lm -lpthread -ldl -lrt -lX11
-SRC = launcher.cpp #enter any other source files here
+LSRC = main.cpp #enter any other source files here
+GSRC = game.cpp
 BUILD_FILE = ../build
 
-all: launcher
+all: launcher gameexample
 
 launcher:
 	mkdir -pv $(BUILD_FILE)
-	$(CC) $(SRC) -o $(BUILD_FILE)/$@ $(CPPFLAGS)
+	$(CC) $(LSRC) -o $(BUILD_FILE)/$@ $(CPPFLAGS)
+
+gameexample:
+	mkdir -pv $(BUILD_FILE)
+	$(CC) $(GSRC) -o $(BUILD_FILE)/$@ $(CPPFLAGS)
