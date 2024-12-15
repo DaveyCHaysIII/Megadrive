@@ -3,11 +3,11 @@
 
 # MegaDrive
 
-**Megadrive** is a game launcher for Linux, featuring over 100 games. It is built using [Raylib](https://www.raylib.com/), a simple and easy-to-use library to create games and graphical applications.
+**Megadrive** is a game launcher for Linux, featuring over 100\* games. It is built using [Raylib](https://www.raylib.com/), a simple and easy-to-use library to create games and graphical applications.
 
 ## How to Run
 
-Clone this repo
+Clone this repo ``` git clone https://github.com/DaveyCHaysIII/atlas-t3_hack_sprint.git ```
 
 To run **Megadrive**, simply execute the following command in your terminal:
 ```./megadrive```
@@ -15,6 +15,12 @@ To run **Megadrive**, simply execute the following command in your terminal:
 ## Requirements
 
 - Linux-based OS
+
+## Tools Used
+
+-Raylib
+-Aseprite
+-Famistudio
 
 ## Authors
 
