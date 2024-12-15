@@ -64,14 +64,14 @@ void init_game(int argc, char **argv, Gamestate *state)
 		state->colors[WINDOW_BACKGROUND] = BLACK;
 		state->colors[WINDOW_TEXT] = GREEN;
 		state->colors[ACCENT] = BLUE;
-		
 
-		state->textures[MARQUIS] = LoadTexture("./ttt/assets/ttt_marquis.png");
-		state->textures[SPRITES] = LoadTexture("./ttt/assets/ttt_sprites.png");
-		state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
+
+		state->textures[MARQUIS] = LoadTexture("ttt/assets/ttt_marquis.png");
+		state->textures[SPRITES] = LoadTexture("ttt/assets/ttt_sprites.png");
+		state->textures[SCORE] = LoadTexture("ttt/assets/score.png");
 
 		state->rectangles[MARQUIS_SOURCE] = { 0.0f, 0.0f, 64.0f, 16.0f };
-		state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f }; 	
+		state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f };
 		state->rectangles[PLAYER_O] = { 16.0f, 0.0f, 16.0f, 16.0f };
 
 		init_timers(state->timers, MAX_TIMERS);
@@ -148,14 +148,14 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 48.0f, 64.0f, 16.0f };
-			state->rectangles[PLAYER_X] = { 32.0f, 16.0f, 16.0f, 16.0f }; 	
+			state->rectangles[PLAYER_X] = { 32.0f, 16.0f, 16.0f, 16.0f };
 			state->rectangles[PLAYER_O] = { 48.0f, 16.0f, 16.0f, 16.0f };
 
 			init_timers(state->timers, MAX_TIMERS);
 			state->frameCount = 0;
 
 		}
-		else 
+		else
 		{
 			//DEFAULT
 
@@ -173,7 +173,7 @@ void init_game(int argc, char **argv, Gamestate *state)
 			state->textures[SCORE] = LoadTexture("./ttt/assets/score.png");
 
 			state->rectangles[MARQUIS_SOURCE] = { 0.0f, 0.0f, 64.0f, 16.0f };
-			state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f }; 	
+			state->rectangles[PLAYER_X] = { 0.0f, 0.0f, 16.0f, 16.0f };
 			state->rectangles[PLAYER_O] = { 16.0f, 0.0f, 16.0f, 16.0f };
 			init_timers(state->timers, MAX_TIMERS);
 			state->frameCount = 0;
@@ -237,7 +237,7 @@ void game_playing(Gamestate *state)
 
 	//------------------------------------------------Board generation
 	const int PADDING = 10;
-	const int OFFSET = 150;	
+	const int OFFSET = 150;
 	int row_1_x = BOARD_POSX;
 	int row_2_x = BOARD_POSX + OFFSET;
 	int row_3_x = row_2_x + OFFSET;
@@ -259,7 +259,7 @@ void game_playing(Gamestate *state)
 	DrawRectangle(BOARD_POSX + PADDING, BOARD_POSY + PADDING, BOARD_HEIGHT + PADDING, BOARD_WIDTH + PADDING, BLACK);
 
 	DrawRectangle(BOARD_POSX - PADDING, BOARD_POSY - PADDING, BOARD_HEIGHT + (PADDING * 2), BOARD_WIDTH + (PADDING * 2), state->colors[FOREGROUND]);
-	
+
 	for(i = 0; i <= 8; i++)
 	{
 		/*int start_x = 50;
@@ -287,7 +287,7 @@ void game_playing(Gamestate *state)
 		{
 			if (winner == 'x')
 				DrawText("X Score: 1", 580, 250, 30, state->colors[WINDOW_TEXT]);
-			else 
+			else
 				DrawText("X Score: 0", 580, 250, 30, state->colors[WINDOW_TEXT]);
 
 
@@ -336,7 +336,7 @@ void game_playing(Gamestate *state)
 
             // Check if mouse click is within the rectangle
 	    for (i = 0; i <= 8; i++)
-            	if (CheckCollisionPointRec(mousePos, recs[i]) && (textured[i] == 0)) 
+            	if (CheckCollisionPointRec(mousePos, recs[i]) && (textured[i] == 0))
 		{
                 	 textured[i] = 1;
 			 num_turns++;
