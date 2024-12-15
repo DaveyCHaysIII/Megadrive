@@ -1,6 +1,26 @@
 # atlas-t3_hack_sprint
-This is our t3 hack sprint repo
-g++ -o test pongmain.cpp -lraylib -lm -ldl -pthread
-g++ main.cpp -o my_program -L/usr/local/lib/libraylib.a -lraylib -lGL -lGLU -lm -lpthread -ldl -lrt -lX11
 
-test
+
+# MegaDrive
+
+**Megadrive** is a game launcher for Linux, featuring over 100 games. It is built using [Raylib](https://www.raylib.com/), a simple and easy-to-use library to create games and graphical applications.
+
+## How to Run
+
+Clone this repo
+
+To run **Megadrive**, simply execute the following command in your terminal:
+```./megadrive```
+
+## Requirements
+
+- Linux-based OS
+
+## Authors
+
+- Davey Hays
+- Logan Wyatt
+
+In association with Atlas School of Tulsa
+
+
