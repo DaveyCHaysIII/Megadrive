@@ -12,7 +12,7 @@ int main(int argc, char **argv, char **env) {
 	SetTargetFPS(TARGET_FPS);
 
 	init_game(argc, argv, &state);
-	
+
 	while (!WindowShouldClose())
 	{
 		state.frameCount = getFrames();
@@ -56,7 +56,7 @@ void init_game(int argc, char **argv, Gamestate *state)
 {
 	if (argc < 2)
 	{
-	 
+
 		state->gameState   = SPLASH;
 		state->m_off       = 0.0f;
 		state->s_off       = 0.0f;
@@ -73,7 +73,7 @@ void init_game(int argc, char **argv, Gamestate *state)
 		state->colors[WINDOW_BACKGROUND] = BLOOD;
 		state->colors[WINDOW_TEXT]       = RED;
 		state->colors[ACCENT]            = YELLOW;
-		
+
 
 		state->textures[MARQUIS]     = LoadTexture("./assets/marquis.png");
 		state->textures[BACKDROP]    = LoadTexture("./assets/forest_bg.png");
@@ -124,7 +124,7 @@ void init_game(int argc, char **argv, Gamestate *state)
 		{
 			//EXPANSE
 		}
-		else 
+		else
 		{
 		}
 
@@ -187,7 +187,7 @@ void splash(Gamestate *state)
 void game_playing(Gamestate *state)
 {
 
-	static float hunger_lvl = 80.0f;
+	static float hunger_lvl = 100.0f;
 	static Color hunger_bar_color = PINK;
 
 	//---------------------------------MAIN GAME
@@ -197,14 +197,14 @@ void game_playing(Gamestate *state)
 	Rectangle sprite_source = state->rectangles[LILGREEN_ANIMATED_SOURCE];
 	Rectangle directional_dest = {};
 	Rectangle directional_source = {};
-	Rectangle dialogue = { 440.0f, 480.0f, 260.0f, 55.0f };
+	Rectangle dialogue = { 440.0f, 480.0f, 270.0f, 55.0f };
 	Rectangle narrator = {};
 	Rectangle north  =   { 930.0f, 500.0f, 35.0f, 35.0f };
 	Rectangle south  =   { 930.0f, 580.0f, 35.0f, 35.0f };
 	Rectangle west   =   { 890.0f, 540.0f, 35.0f, 35.0f };
 	Rectangle east   =   { 970.0f, 540.0f, 35.0f, 35.0f };
-	Rectangle status =   { 240.0f, 100.0f, 215.0f, 50.0f };
-	Rectangle hunger =   { 351.0f, 118.0f, hunger_lvl, 10.0f };
+	Rectangle status =   { 240.0f, 100.0f, 230.0f, 50.0f };
+	Rectangle hunger =   { 349.0f, 118.0f, hunger_lvl, 10.0f };
 	Texture2D texture = state->textures[BACKDROP];
 	Texture2D sprite = state->textures[SPRITES];
 	DrawTexturePro(texture, background_source, background_dest, (Vector2){0, 0}, 0, WHITE);
@@ -218,18 +218,18 @@ void game_playing(Gamestate *state)
 	DrawRectangleRec(hunger, hunger_bar_color);
 	DrawTexturePro(sprite, sprite_source, sprite_dest, (Vector2){0,0}, 0, WHITE);
 	DrawText("Which way should I go?", 455, 500, 20, state->colors[LILGREEN_TEXT]);
-	DrawText("HUNGER [           ]", 250, 115, 20, WHITE);
+	DrawText("HUNGER [             ]", 250, 115, 20, WHITE);
 	if (IsKeyPressed(KEY_N))
-		hunger_lvl = hunger_lvl - 8;
-	if (hunger_lvl <= 64)
+		hunger_lvl = hunger_lvl - 10;
+	if (hunger_lvl <= 70)
 		state->b_off = 1.0f;
-	if (hunger_lvl <= 48)
+	if (hunger_lvl <= 50)
 	{
 		hunger_bar_color = MAROON;
 		state->b_off = 2.0f;
 		state->disposition = 1.0f;
 	}
-	if (hunger_lvl <= 24)
+	if (hunger_lvl <= 20)
 		state->b_off = 3.0f;
 	if (hunger_lvl <= 0)
 		state->gameState = GAME_OVER;
