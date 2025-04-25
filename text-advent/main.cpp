@@ -58,13 +58,13 @@ void init_game(int argc, char **argv, Gamestate *state)
 	{
 
 		state->gameState   = SPLASH;
-		state->m_off       = 0.0f;
-		state->s_off       = 0.0f;
-		state->d_off       = 0.0f;
-		state->b_off       = 0.0f;
-		state->disposition = 0.0f;
-		state->expression  = 0.0f;
-		state->movement    = 0.0f;
+		state->m_off       = 0.0f; // 0-5
+		state->s_off       = 0.0f; // 0-5
+		state->d_off       = 0.0f; // 0-5
+		state->b_off       = 0.0f; // 0-3
+		state->disposition = 0.0f; // 0-1
+		state->expression  = 0.0f; // 0-5
+		state->movement    = 0.0f; // 0-1
 
 		state->colors[BACKGROUND]        = BLACK;
 		state->colors[DIALOGUE]          = BLACK;
@@ -209,6 +209,8 @@ void game_playing(Gamestate *state)
 	Texture2D sprite = state->textures[SPRITES];
 	DrawTexturePro(texture, background_source, background_dest, (Vector2){0, 0}, 0, WHITE);
 
+	getExpression();
+
 	DrawRectangleRec(dialogue, BLACK);
 	DrawRectangleRec(north, DARKGRAY);
 	DrawRectangleRec(south, DARKGRAY);
@@ -322,6 +324,33 @@ int formatTimer(int timeInSeconds, char *buffer)
 	std::sprintf(buffer, "%02d:%02d", minutes, seconds);
 	return 0;
 };
+
+void getExpression(Gamestate *state)
+{
+	if (state->timers[ANIMATION]->frames != 0 || state->timers[ANIMATION]->is_complete != 0)
+		return (0)
+	else {
+		int randTime = GetRandomValue(30, 120);
+		int randExpression = GetRandomValue(1, 100);
+
+		if(startTimer(state->timers[ANIMATION], randTime, state->frameCount, TARGET_FPS) == 0)
+		{
+			if(randExpression < 50 || randExpression == 100)
+			{
+				state->expression = 0;
+			} else {
+				state->expression = ((randExpression - 50) / 10) + 1;
+			}
+			resetTimer(state->timers[ANIMATION]);
+		}
+	}
+	//get a random number for timer (60-120)
+	//get a random number for expression
+	//set the animation timer for rand frames
+	//if timer is done
+	//set expression to randexpression
+	//reset timer
+}
 
 int drawCurtains(int posX, int posY, int height, int width, Color color, int speed)
 {

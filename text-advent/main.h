@@ -64,8 +64,8 @@ enum color_list
 enum textures
 {
 	MARQUIS,
-	BACKDROP,	
-	SPRITES, 
+	BACKDROP,
+	SPRITES,
 	DIRECTIONAL,
 	SCORE
 };
@@ -79,6 +79,12 @@ enum Rects
 	LILGREEN_ANIMATED_SOURCE,
 	LILGREEN_DIR_SOURCE,
 	SCORE_SOURCE
+};
+
+enum Timers
+{
+	ANIMATION,
+	DIALOGUE
 };
 
 typedef struct Flags

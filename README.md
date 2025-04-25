@@ -3,6 +3,8 @@
 
 # MegaDrive
 
+![MEGADRIVE](./MEGADRIVE.png)
+
 **Megadrive** is a game launcher for Linux, featuring over 100\* games. It is built using [Raylib](https://www.raylib.com/), a simple and easy-to-use library to create games and graphical applications.
 
 ## How to Run
