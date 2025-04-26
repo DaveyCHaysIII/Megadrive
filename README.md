@@ -5,6 +5,13 @@
 
 ![MEGADRIVE](./MEGADRIVE.png)
 
+## Linkedin
+
+https://www.linkedin.com/in/daveyhaysiii/
+https://www.linkedin.com/in/logan-wyatt/
+
+## Description
+
 **Megadrive** is a game launcher for Linux, featuring over 100\* games. It is built using [Raylib](https://www.raylib.com/), a simple and easy-to-use library to create games and graphical applications.
 
 ## How to Run
@@ -26,9 +33,13 @@ To run **Megadrive**, simply execute the following command in your terminal:
 
 ## Authors
 
-- Davey Hays
-- Logan Wyatt
+- Davey Hays  - project designer, lead dev and asset designer
+- Logan Wyatt - lead dev and project manager
 
 In association with Atlas School of Tulsa
+
+## Todos
+
+- actually get to 100 games!
 
 
