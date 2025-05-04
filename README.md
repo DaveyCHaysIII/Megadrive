@@ -42,4 +42,10 @@ In association with Atlas School of Tulsa
 
 - actually get to 100 games!
 
+## Things I want to explore/do
+
+- learn the basics of GLSL and simple shaders
+- play with more interfaces (options, sub-windows, etc)
+- play with more OOP
+
 
