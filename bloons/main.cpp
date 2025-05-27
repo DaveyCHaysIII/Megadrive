@@ -6,6 +6,7 @@ int main(int argc, char **argv, char **env) {
 	SetTargetFPS(TARGET_FPS);
 	InitWindow(WIN_WIDTH, WIN_HEIGHT, "Raylib Game");
 
+	Bloon::LoadBloonTexture("./assets/bloon-texture-atlas.png");
 	std::vector<Bloon> bloons(10);
 	float spawntimer = 0.0f;
 	const float spawnInterval = 1.0f;
@@ -45,6 +46,7 @@ int main(int argc, char **argv, char **env) {
 		if (IsKeyPressed(KEY_ESCAPE))
 			break;
 	}
+	Bloon::UnloadBloonTexture();
 	CloseWindow();
 }
 

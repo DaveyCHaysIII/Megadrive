@@ -1,6 +1,8 @@
 #include "bloons.h"
 #include <iostream>
 
+Texture2D Bloon::texture = { 0 };
+
 float getRandomFloatSpeed()
 {
 	int step = GetRandomValue(0,10);
@@ -31,6 +33,15 @@ Color getRandomColor()
 	return colors[index];
 }
 
+void Bloon::LoadBloonTexture(const char* filepath)
+{
+	texture = LoadTexture(filepath);
+};
+
+void Bloon::UnloadBloonTexture()
+{
+	UnloadTexture(texture);
+};
 
 Bloon::Bloon()
 {
@@ -53,8 +64,40 @@ void Bloon::Reset()
 
 void Bloon::Draw()
 {
-	if (active)
-		DrawCircle(position.x, position.y, radius, color);
+	if (!active)
+		return;
+
+	int spriteindex = 3;
+	int spritewidth = 192;
+	int spriteheight = 304;
+
+	Rectangle sourceRec = {
+		static_cast<float>(spriteindex * spritewidth),
+		0,
+		static_cast<float>(spritewidth),
+		static_cast<float>(spriteheight)
+	};
+
+	Rectangle destRec = {
+		position.x,
+		position.y,
+		static_cast<float>(spritewidth),
+		static_cast<float>(spriteheight)
+	};
+
+	Vector2 origin = {
+		spritewidth / 2.0f,
+		spriteheight / 2.0f
+	};
+
+	DrawTexturePro(texture,
+		       sourceRec,
+		       destRec,
+		       origin,
+		       0,
+		       color
+		       );
+
 }
 
 bool Bloon::isMouseOver() const

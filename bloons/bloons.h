@@ -18,10 +18,13 @@ class Bloon {
 		bool isMouseOver() const;
 		bool isClicked() const;
 		bool active;
+		static void LoadBloonTexture(const char* filepath);
+		static void UnloadBloonTexture();
 
 	private:
 		Vector2 position;
 		float speed;
 		float radius;
 		Color color;
+		static Texture2D texture;
 };
