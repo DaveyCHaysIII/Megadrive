@@ -4,6 +4,7 @@
 #include <raylib.h>
 #include <iostream>
 #include <vector>
+#include "game.h"
 
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
 #define COORDS_COLOR BLACK
