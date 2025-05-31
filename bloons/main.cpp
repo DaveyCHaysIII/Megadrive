@@ -6,10 +6,10 @@ int main(int argc, char **argv, char **env) {
 	InitWindow(WIN_WIDTH, WIN_HEIGHT, "Raylib Game");
 
 	Bloon::LoadBloonTexture("./assets/bloon-texture-atlas.png");
-	std::vector<Bloon> bloons(10);
 	float spawntimer = 0.0f;
 	const float spawnInterval = 1.0f;
 
+	Game game;
 
 	while(!WindowShouldClose())
 	{
@@ -19,25 +19,8 @@ int main(int argc, char **argv, char **env) {
 		DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, GAME_COLOR);
 		BeginScissorMode(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT);
 
-		spawntimer += GetFrameTime();
-		if (spawntimer >= spawnInterval)
-		{
-			spawntimer = 0.0f;
-
-			for (Bloon& b : bloons)
-			{
-				if (!b.active)
-				{
-					b.active = true;
-					break;
-				}
-			}
-		}
-		for (Bloon& b : bloons)
-		{
-			b.Update();
-			b.Draw();
-		}
+		game.Update();
+		game.Draw();
 
 		EndScissorMode();
 		display_mouse_coords(DEFAULT_POSITION, 20, COORDS_COLOR);

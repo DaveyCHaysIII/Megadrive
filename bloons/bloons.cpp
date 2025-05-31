@@ -5,6 +5,7 @@ Texture2D Bloon::texture = { 0 };
 
 float getRandomFloatSpeed()
 {
+	/* Raylib defined func GetRandomValue(min, max) incl */
 	int step = GetRandomValue(0,10);
 	return 0.5f + step * 0.1f;
 }
@@ -21,6 +22,7 @@ float getRandomYPos()
 
 Color getRandomColor()
 {
+	/* Raylib defined colors, {r,g,b,a} */
 	static const Color colors[]
 	{
 		RED,
@@ -35,11 +37,13 @@ Color getRandomColor()
 
 void Bloon::LoadBloonTexture(const char* filepath)
 {
+	/* Raylib defined function */
 	texture = LoadTexture(filepath);
 };
 
 void Bloon::UnloadBloonTexture()
 {
+	/* Raylib defined function */
 	UnloadTexture(texture);
 };
 
@@ -52,12 +56,10 @@ Bloon::Bloon()
 	this -> active = false;
 }
 
-
 void Bloon::Reset()
 {
 	this -> position = { getRandomXPos(), getRandomYPos() };
 	this -> speed = getRandomFloatSpeed();
-	this -> radius = 30.0f;
 	this -> color = getRandomColor();
 	this -> active = false;
 }
@@ -72,6 +74,7 @@ void Bloon::Draw()
 	int spriteheight = 304;
 
 	Rectangle sourceRec = {
+		/* I don't remember why I needed static_cast or what it does */
 		static_cast<float>(spriteindex * spritewidth),
 		0,
 		static_cast<float>(spritewidth),
@@ -100,25 +103,21 @@ void Bloon::Draw()
 
 }
 
-bool Bloon::isMouseOver() const
+Vector2 Bloon::getPosition()
 {
-	return CheckCollisionPointCircle(GetMousePosition(), position, radius);
+	return position;
 }
 
-bool Bloon::isClicked() const
+int Bloon::getRadius()
 {
-	return isMouseOver() && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+	return radius;
 }
 
 void Bloon::Update()
 {
-	if (isClicked() || position.y < 50)
+	if (position.y < 50)
 		Reset();
 	if (active)
 		position.y -= speed;
 }
 
-void Bloon::logPos()
-{
-	std::cout << "bloonPos: (" << position.x << ", " << position.y << ")\n";
-}

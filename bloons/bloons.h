@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <iostream>
 
 #define SPAWNX_MAX 400
 #define SPAWNX_MIN 880
@@ -12,11 +13,10 @@ class Bloon {
 		Bloon();
 		void Update();
 		void Draw();
-		void logPos();
 		void Reset();
+		Vector2 getPosition();
+		int getRadius();
 
-		bool isMouseOver() const;
-		bool isClicked() const;
 		bool active;
 		static void LoadBloonTexture(const char* filepath);
 		static void UnloadBloonTexture();
