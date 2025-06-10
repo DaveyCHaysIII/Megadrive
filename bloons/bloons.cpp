@@ -1,7 +1,7 @@
 #include "bloons.h"
 #include <iostream>
 
-Texture2D Bloon::texture = { 0 };
+Texture2D Bloon::texture = { 0, 0, 0, 0, 0 };
 
 float getRandomFloatSpeed()
 {
