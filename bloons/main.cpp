@@ -1,5 +1,15 @@
 #include "main.h"
 
+//
+// yeah if this style of comments is good enough for John Carmack
+// its good enough for me
+//
+// This is bloons, a balloon popping game
+// Its mascot is Happy Howie, the silly clown
+// I want to make this game the example game to show other devs
+// so I want it running right and looking clean
+//
+
 int main() {
 
 	SetTargetFPS(TARGET_FPS);
@@ -11,12 +21,18 @@ int main() {
 
 	while(!WindowShouldClose())
 	{
+		//suggestion for timer:
+		//float dt = GetFrameTime(); - gets time since last frame
+		//use:
+		//update(dt); class will be responsible for using dt
 		BeginDrawing();
+		//can we encapsulate some of these into like an init_window() function?
 		ClearBackground(WINDOW_COLOR);
 		DrawText("MEGADrive!", LOGO_POSX, LOGO_POSY, LOGO_SIZE, LOGO_COLOR);
 		DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, GAME_COLOR);
 		BeginScissorMode(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT);
 
+		//main update/draw
 		game.Update();
 		game.Draw();
 
