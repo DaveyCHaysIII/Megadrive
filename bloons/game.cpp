@@ -40,13 +40,13 @@ void Game::LogScore()
 	std::cout << "Score: " << score << "\n";
 }
 
-void Game::Update()
+void Game::Update(float dt)
 {
 	for (Bloon& b : bloons)
 	{
-		Vector2 position = b.getPosition();	
+		Vector2 position = b.getPosition();
 		int radius = b.getRadius();
-		
+
 		if(CheckCollisionPointCircle(GetMousePosition(), position, radius) &&
 		IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
 		b.active)
@@ -58,7 +58,7 @@ void Game::Update()
 		b.Update();
 	}
 
-	spawntimer += GetFrameTime();
+	spawntimer += dt;
 	if (spawntimer >= spawninterval)
 	{
 		spawntimer = 0.0f;
@@ -73,22 +73,27 @@ void Game::Update()
 		}
 	}
 
-	TimeAccumulator += GetFrameTime();
+	TimeAccumulator += dt;
 	if (TimeAccumulator >= 1.0f)
 	{
 		if (GameTime > 0)
 			GameTime--;
-		
+
 		TimeAccumulator = 0.0f;
 	}
 }
 
 void Game::Draw()
 {
+
 	for (Bloon& b : bloons)
 		b.Draw();
-	
+
 	DrawScore();
 	DrawTime();
 }
 
+int Game::GetGameTime()
+{
+	return GameTime;
+}

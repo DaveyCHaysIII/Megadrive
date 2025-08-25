@@ -5,11 +5,14 @@
 #include <iostream>
 #include <vector>
 #include "game.h"
+#include "timer.h"
 
 #define DEFAULT_POSITION ((Vector2){ 1200.0f, 740.0f })
 #define COORDS_COLOR BLACK
 #define WIN_WIDTH 1280
 #define WIN_HEIGHT 800
+#define WIN_MID_X 640
+#define WIN_MID_Y 400
 #define WINDOW_COLOR GOLD
 #define GAME_X 240
 #define GAME_Y 100

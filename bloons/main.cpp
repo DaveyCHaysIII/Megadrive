@@ -16,32 +16,62 @@ int main() {
 	InitWindow(WIN_WIDTH, WIN_HEIGHT, "Raylib Game");
 
 	Bloon::LoadBloonTexture("./assets/bloon-texture-atlas.png");
+	Shader addShader = LoadShader(0, "additive.fs");
+
+	int addTintLoc = GetShaderLocation(addShader, "tintColor");
+	int addStrengthLoc = GetShaderLocation(addShader, "strength");
+	float addTint[3] = {1.0f, 0.8f, 0.8f};
+	float addStrength = 0.0f;
+	int loops = 0;
 
 	Game game;
+	Timer timer;
 
 	while(!WindowShouldClose())
 	{
-		//suggestion for timer:
-		//float dt = GetFrameTime(); - gets time since last frame
-		//use:
-		//update(dt); class will be responsible for using dt
+		float dt = GetFrameTime();
+		if (game.GetGameTime() > 0)
+			game.Update(dt);
+		else
+		{
+			if (timer.Expired())
+				timer.StartLoop(1.0f);
+			else if (timer.GetNumLoops() > loops && addStrength < 1)
+			{
+				loops++;
+				addStrength += 0.4f;
+				if (addStrength > 1.0)
+					addStrength = 1.0;
+			}
+			timer.Update(dt);
+		}
+
 		BeginDrawing();
-		//can we encapsulate some of these into like an init_window() function?
 		ClearBackground(WINDOW_COLOR);
 		DrawText("MEGADrive!", LOGO_POSX, LOGO_POSY, LOGO_SIZE, LOGO_COLOR);
+
+		BeginShaderMode(addShader);
+		SetShaderValue(addShader, addTintLoc, addTint, SHADER_UNIFORM_VEC3);
+		SetShaderValue(addShader, addStrengthLoc, &addStrength, SHADER_UNIFORM_FLOAT);
 		DrawRectangle(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT, GAME_COLOR);
 		BeginScissorMode(GAME_X, GAME_Y, GAME_WIDTH, GAME_HEIGHT);
 
-		//main update/draw
-		game.Update();
 		game.Draw();
 
 		EndScissorMode();
+                EndShaderMode();
+
+		if (addStrength >= 1)
+		{
+			DrawText("THE END", WIN_MID_X - 80, WIN_MID_Y, 35, WHITE);
+		}
 		display_mouse_coords(DEFAULT_POSITION, 20, COORDS_COLOR);
 		EndDrawing();
+
 		if (IsKeyPressed(KEY_ESCAPE))
 			break;
 	}
+
 	Bloon::UnloadBloonTexture();
 	CloseWindow();
 }
