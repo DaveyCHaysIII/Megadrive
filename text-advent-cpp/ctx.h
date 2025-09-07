@@ -28,11 +28,23 @@ struct Offsets
 
 struct Colors
 {
-	//todo
+	Color background;
+	Color dialogue;
+	Color lilgreen_text;
+	Color narrator_text;
+	Color window_background;
+	Color window_text;
+	Color accent;
 
-	void set_colors()
+	void set_colors(Color b, Color d, Color l, Color n, Color wb, Color wt, Color a)
 	{
-		//todo
+		background        = b;
+		dialogue          = d;
+		lilgreen_text     = l;
+		narrator_text     = n;
+		window_background = wb;
+		window_text       = wt;
+		accent            = a;
 	}
 }
 
@@ -48,14 +60,16 @@ struct Textures
 
 struct Rectangles
 {
-	//todo
+	Rectangle marquis_source = {};
+	Rectangle marquis
 }
 
 class Ctx {
 
 	public:
-		getState();
-		getTurn();
+		void Init()
+		int getState();
+		int getTurn();
 		void Update(float dt);
 
 		Offsets offsets;
