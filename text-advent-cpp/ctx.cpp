@@ -1,19 +1,29 @@
 #include "ctx.h"
 
-
-int Ctx::getState()
+void Ctx::Init(int arg)
 {
-	return state;
-}
+	//todo
+};
+
+Ctx::state Ctx::getState()
+{
+	return gamestate;
+};
 
 int Ctx::getTurn()
 {
-	return turn;
-}
+	//todo
+};
 
 void Ctx::Update(float dt)
 {
 	//todo
-}
+};
+
+Rectangle Rectangles::getMarquisSrcRec(float m_off)
+{
+
+};
+
 
 

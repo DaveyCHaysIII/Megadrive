@@ -4,28 +4,6 @@
 #include "timer.h"
 
 
-struct Offsets
-{
-	float m_off; //0-5
-	float s_off;
-	float d_off;
-	float b_off; //0-3
-	float disposition; //0-1
-	float expression; //0-5
-	float movement; //0-1
-
-	void set_off(float m, float s, float d, float b)
-	{
-		m_off = m;
-		s_off = s;
-		d_off = d;
-		b_off = b;
-		disposition = 0;
-		expression = 0;
-		movement = 0;
-	}
-}
-
 struct Colors
 {
 	Color background;
@@ -46,7 +24,7 @@ struct Colors
 		window_text       = wt;
 		accent            = a;
 	}
-}
+};
 
 struct Textures
 {
@@ -56,29 +34,45 @@ struct Textures
 	{
 		//todo
 	}
-}
+};
 
 struct Rectangles
 {
-	Rectangle marquis_source = {};
-	Rectangle marquis
-}
+	//marquis
+	//backdrop
+	//sprites
+	//directional
+	//score
+
+	Rectangle getMarquisSrcRec(float m_off);
+	Rectangle getBackdropSrcRec(float b_off);
+	Rectangle getSpriteSrcRec(float s_off, float disposition, float expression, float movement);
+	Rectangle getDirectionalSrcRec(float d_off);
+	Rectangle getScoreSrcRec();
+
+};
 
 class Ctx {
 
+	private:
+		enum class state { SPLASH, GAME, CREDITS };
+		state gamestate;
+		int turn;
+
 	public:
-		void Init()
-		int getState();
+		void Init(int arg);
+		state getState();
 		int getTurn();
 		void Update(float dt);
+		float m_off;
+		float s_off;
+		float b_off;
+		float d_off;
+		float disposition;
+		float expression;
+		float movement;
 
-		Offsets offsets;
 		Colors colors;
 		Textures textures;
 		Rectangles rectangles;
-
-
-	private:
-		enum class state { SPLASH, GAME, CREDITS };
-		int turn;
-}
+};
