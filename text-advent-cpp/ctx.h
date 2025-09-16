@@ -38,16 +38,24 @@ struct Textures
 
 struct Rectangles
 {
-	//marquis
-	//backdrop
-	//sprites
-	//directional
-	//score
+	// marquis
+	// backdrop
+	// sprites
+	// directional
+	// N
+	// S
+	// E
+	// W
+	// score
 
 	Rectangle getMarquisSrcRec(float m_off);
 	Rectangle getBackdropSrcRec(float b_off);
 	Rectangle getSpriteSrcRec(float s_off, float disposition, float expression, float movement);
-	Rectangle getDirectionalSrcRec(float d_off);
+	Rectangle getDirectionalSrcRec(float d_off);	
+	Rectangle getCompassNSrcRec(float c_off);
+	Rectangle getCompassSSrcRec(float c_off);
+	Rectangle getCompassESrcRec(float c_off);
+	Rectangle getCompassWSrcRec(float c_off);
 	Rectangle getScoreSrcRec();
 
 };
@@ -68,6 +76,7 @@ class Ctx {
 		float s_off;
 		float b_off;
 		float d_off;
+		float c_off;
 		float disposition;
 		float expression;
 		float movement;
