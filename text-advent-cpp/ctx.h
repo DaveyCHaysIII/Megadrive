@@ -28,12 +28,17 @@ struct Colors
 
 struct Textures
 {
-	//todo
+	Texture2D marquis;
+	Texture2D background;
+	Texture2D sprites;
+	Texture2D directions;
+	Texture2D compass;
 
-	void set_textures()
-	{
-		//todo
-	}
+};
+
+struct Sounds
+{
+	//todo
 };
 
 struct Rectangles
@@ -72,16 +77,18 @@ class Ctx {
 		state getState();
 		int getTurn();
 		void Update(float dt);
-		float m_off;
-		float s_off;
-		float b_off;
-		float d_off;
-		float c_off;
-		float disposition;
-		float expression;
-		float movement;
+		float m_off = 0;
+		float s_off = 0;
+		float b_off = 0;
+		float d_off = 0;
+		float c_off = 0;
+		float disposition = 0;
+		float expression = 0;
+		float movement = 0;
 
+		Timer timer;
 		Colors colors;
 		Textures textures;
+		Sounds sounds;
 		Rectangles rectangles;
 };

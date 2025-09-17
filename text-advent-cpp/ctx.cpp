@@ -3,7 +3,71 @@
 
 void Ctx::Init(int arg)
 {
-	//todo
+	//init state
+	//init turn
+	//init offsets
+	//init colors
+	//init textures
+	gamestate = state::SPLASH;
+	turn = 0;
+
+	switch (arg)
+	{
+		case (0):
+			m_off = 0.0f;
+			s_off = 0.0f;
+			b_off = 0.0f;
+			d_off = 0.0f;
+			c_off = 0.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+		case (1):
+			m_off = 1.0f;
+			s_off = 1.0f;
+			b_off = 1.0f;
+			d_off = 0.0f;
+			c_off = 1.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+		case (2):
+			m_off = 2.0f;
+			s_off = 2.0f;
+			d_off = 2.0f;
+			b_off = 0.0f;
+			c_off = 2.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+		case (3):
+			m_off = 3.0f;
+			s_off = 3.0f;
+			d_off = 3.0f;
+			b_off = 0.0f;
+			c_off = 3.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+		case (4):
+			m_off = 4.0f;
+			s_off = 4.0f;
+			d_off = 4.0f;
+			b_off = 0.0f;
+			c_off = 4.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+		case (5):
+			m_off = 5.0f;
+			s_off = 5.0f;
+			d_off = 5.0f;
+			b_off = 0.0f;
+			c_off = 5.0f; 
+			colors.set_colors(BLACK, BLACK, GREEN, RED, MAROON, RED, YELLOW);
+			break;
+
+	}
 };
 
 Ctx::state Ctx::getState()
